@@ -1,0 +1,65 @@
+@top StringParsing { (validCharacter | whitespace | script)* }
+
+script {
+  lookup | math
+}
+
+lookup[@isGroup=lookup] {
+  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | PronounOf | SizeOf
+}
+
+math[@isGroup=math] { Addition | Subtraction | Multiplication | Division | Modulo | Power | Min | Max }
+
+Addition { additionStart (numberOrScript " ")+ "+]" }
+Subtraction { subtractionStart (numberOrScript " ")+ "-]" }
+Multiplication { multiplicationStart (numberOrScript " ")+ "*]" }
+Division { divisionStart (numberOrScript " ")+ "/]" }
+Modulo { moduloStart (numberOrScript " ")+ "%]" }
+Power { powerStart (numberOrScript " ")+ "^]" }
+Min { minStart (numberOrScript " ")+ "<]" }
+Max { maxStart (numberOrScript " ")+ ">]" }
+
+numberOrScript { (Number | script) }
+Number { number+ }
+
+@tokens {
+  // Name lookups
+  PlayerName { openScript "player" closeScript }
+  LookerName { openScript "looker" closeScript }
+  VictorName { openScript "victor" closeScript }
+  LoserName { openScript "loser" closeScript }
+  OwnerName { openScript "owner" closeScript }
+  HereName { openScript "here" closeScript }
+
+  // Other single lookups
+  CommandName { openScript "command" closeScript }
+  SkinShortDescription { openScript "skin" closeScript }
+
+  // More complicted lookups
+  PronounOf { openScript "%" $[aAsSoOpPrR] " of " "["? validTargets "]"? closeScript }
+  SizeOf { openScript "size of " "["? validTargets "]"? closeScript }
+
+  // Math - all done separately for different names and because the end token has to match the star token
+  additionStart { openScript "+ "}
+  subtractionStart { openScript "- "}
+  multiplicationStart { openScript "* "}
+  divisionStart { openScript "/ "}
+  moduloStart { openScript "% "}
+  powerStart { openScript "^ "}
+  minStart { openScript "< "}
+  maxStart { openScript "> "}
+
+  // Underlying things
+  validTargets { "player" | "looker" | "victor" | "loser" }
+  validCharacter { $[\x21-\x7e] }
+  whitespace { " " | "\n" }
+  number { @digit+ }
+  openScript[closedBy=closeScript] { "[" }
+  closeScript[opednBy=openScript] { "]" }
+
+  @precedence { mathStart, openScript, closeScript, validCharacter }
+}
+
+@external propSource stringParsingHighlighting from "./highlight"
+
+@detectDelim

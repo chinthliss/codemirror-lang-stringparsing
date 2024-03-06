@@ -1,63 +1,82 @@
 @top StringParsing { (validCharacter | whitespace | script)* }
 
 script {
-  lookup | math | command
+  lookup | math | command | comment
 }
 
 lookup[@isGroup=lookup] {
-  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | EnvironmentModifier | CityStat | DateTime | MoonPhase | PresentArea
+  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | EnvironmentModifier | CityStat | DateTime | MoonPhase | PresentArea | WeatherValue
 }
 
+// Math
 math[@isGroup=math] { Addition | Subtraction | Multiplication | Division | Modulo | Power | Min | Max }
 
-command[@isGroup=command] { TalkScript }
+Addition { additionStart (NumberOrScript " ")+ additionEnd }
+Subtraction { subtractionStart (NumberOrScript " ")+ subtractionEnd }
+Multiplication { multiplicationStart (NumberOrScript " ")+ multiplicationEnd }
+Division { divisionStart (NumberOrScript " ")+ divisionEnd }
+Modulo { moduloStart (NumberOrScript " ")+ moduloEnd }
+Power { powerStart (NumberOrScript " ")+ powerEnd }
+Min { minStart (NumberOrScript " ")+ minEnd }
+Max { maxStart (NumberOrScript " ")+ maxEnd }
 
-Addition { additionStart (numberOrScript " ")+ "+]" }
-Subtraction { subtractionStart (numberOrScript " ")+ "-]" }
-Multiplication { multiplicationStart (numberOrScript " ")+ "*]" }
-Division { divisionStart (numberOrScript " ")+ "/]" }
-Modulo { moduloStart (numberOrScript " ")+ "%]" }
-Power { powerStart (numberOrScript " ")+ "^]" }
-Min { minStart (numberOrScript " ")+ "<]" }
-Max { maxStart (numberOrScript " ")+ ">]" }
+// Comments / Descriptions
+comment[@isGroup=comment] { Comment | Description }
 
-numberOrScript { (Number | script) }
-Number { number+ }
+Comment { commentStart Text closeScript }
+Description { descriptionStart Text closeScript }
+
+// Commands
+command[@isGroup=command] { IncreaseStat | Kill | SetStat | SetStatus | Impregnate | FillPart | TalkScript }
+SetStat { setStatStart Text of Target to NumberOrScript closeScript }
+SetStatus { setStatusStart Text " status" of Target to NumberOrScript " mag for " Number " rounds" closeScript }
+IncreaseStat { increaseStatStart Text of Target by Number closeScript }
+Kill { killStart Text closeScript }
+Impregnate { impregnateStart Target " with " Target }
+FillPart { fillPartStart FillableBodyPart " of " Target by Number closeScript }
+TalkScript { talkScriptStart Text of Target closeScript }
+
+// Parameters (Mostly for highlighting)
+Text[@isGroup=parameter] { textWithSpaces }
+Target[@isGroup=parameter] { validTargets }
+NumberOrScript[@isGroup=parameter] { (number+ | script) }
+Number[@isGroup=parameter] { number+ }
+FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
 
 @tokens {
-  // Name lookups
+  // Single word lookups
   PlayerName { openScript "player" closeScript }
   LookerName { openScript "looker" closeScript }
   VictorName { openScript "victor" closeScript }
   LoserName { openScript "loser" closeScript }
   OwnerName { openScript "owner" closeScript }
   HereName { openScript "here" closeScript }
-
-  // Other single lookups
   CommandName { openScript "command" closeScript }
   SkinShortDescription { openScript "skin" closeScript }
   CockShortDescription { openScript "cock" closeScript }
   CuntShortDescription { openScript "cunt" closeScript }
 
   // Targeted lookups
-  PronounOf { openScript "%" $[aAsSoOpPrR] " of " validTargets closeScript }
-  SizeOf { openScript "size of " validTargets closeScript }
-  SkinOf { openScript "skin of " validTargets closeScript }
-  CockOf { openScript "cock of " validTargets closeScript }
-  CuntOf { openScript "cunt of " validTargets closeScript }
-  LengthOf { openScript allBodyParts " length of " validTargets closeScript }
-  FormattedLengthOf { openScript "formatted " allBodyParts " length of " validTargets closeScript }
+  PronounOf { openScript "%" $[aAsSoOpPrR] of validTargets closeScript }
+  SizeOf { openScript "size" of validTargets closeScript }
+  SkinOf { openScript "skin" of validTargets closeScript }
+  CockOf { openScript "cock" of validTargets closeScript }
+  CuntOf { openScript "cunt" of validTargets closeScript }
+  LengthOf { openScript allBodyParts " length" of validTargets closeScript }
+  FormattedLengthOf { openScript "formatted " allBodyParts " length" of validTargets closeScript }
   NumberOf { openScript "number of " allBodyParts "s of " validTargets closeScript }
   DailyCumOf { openScript "daily cum amount of " validTargets closeScript }
   DailyMilkOf { openScript "daily milk amount of " validTargets closeScript }
-  AdjectiveSizeOf { openScript ( "breast" | "cock" | "cunt" ) " size of " validTargets closeScript }
-  DescriptionPartOf { openScript "desc " mutableBodyParts " of " textWithSpaces closeScript }
-  TransformDescriptionPartOf { openScript "transform " mutableBodyParts " of " textWithSpaces closeScript }
-  HpOf { openScript "hp of " validTargets closeScript }
-  InfectionPartsOf { openScript "the infection " textWithSpaces " of " validTargets closeScript }
-  StatusMagnitudeOf { openScript "status " textWithSpaces " of " validTargets closeScript }
+  AdjectiveSizeOf { openScript ( "breast" | "cock" | "cunt" ) " size" of  validTargets closeScript }
+  DescriptionPartOf { openScript "desc " mutableBodyParts of textWithSpaces closeScript }
+  TransformDescriptionPartOf { openScript "transform " mutableBodyParts of textWithSpaces closeScript }
+  HpOf { openScript "hp" of validTargets closeScript }
+  InfectionPartsOf { openScript "the infection " textWithSpaces of validTargets closeScript }
+  StatusMagnitudeOf { openScript "status " textWithSpaces of validTargets closeScript }
 
   @precedence { DescriptionPartOf, TransformDescriptionPartOf, CityStat, validCharacter }
+
+  @precedence { of, by, closeScript, textWithSpaces }
 
   // Other functions
   EnvironmentModifier { openScript ( "heat" | "cold" | "water" | "nanite" ) closeScript }
@@ -65,19 +84,38 @@ Number { number+ }
   PresentArea { openScript "area" closeScript }
   DateTime { openScript ( "year" | "month" | "day" | "weekday" | "hour" | "minute" | "systime" ) closeScript }
   MoonPhase { openScript "moon phase" " capitalized"? closeScript }
+  WeatherValue { openScript "weather " ( "id" | "dt" | "name" | "coord-lat" | "coord-lon" | "sys-country" | "sys-sunrise" | "sys-sunset" | "main-temp" | "main-temp_min" | "main-temp_max" | "main-pressure" | "main-sea_level" | "main-grnd_level" | "wind-speed" | "wind-deg" | "wind-gust" | "clouds-all" | "weather-id" | "weather-main" | "weather-description" | "weather-icon" | "rain-1h" | "rain-3h" | "snow-1h" | "snow-3h" ) closeScript  }
 
-  // Math - all done separately for different names and because the end token has to match the start token
-  additionStart { openScript "+ "}
-  subtractionStart { openScript "- "}
-  multiplicationStart { openScript "* "}
-  divisionStart { openScript "/ "}
-  moduloStart { openScript "% "}
-  powerStart { openScript "^ "}
-  minStart { openScript "< "}
-  maxStart { openScript "> "}
+  // Comment / Descriptions
+  commentStart { openScript "comment=" }
+  descriptionStart { openScript "description=" }
 
-  // Commands
-  TalkScript { openScript "talk " textWithSpaces " of " validTargets closeScript }
+  // Math - all done separately as different names for clarity and because the end token has to match the start token
+  additionStart       { "[+ " }
+  subtractionStart    { "[- " }
+  multiplicationStart { "[* " }
+  divisionStart       { "[/ " }
+  moduloStart         { "[% " }
+  powerStart          { "[^ " }
+  minStart            { "[< " }
+  maxStart            { "[> " }
+  additionEnd         { "+]" }
+  subtractionEnd      { "-]" }
+  multiplicationEnd   { "*]" }
+  divisionEnd         { "/]" }
+  moduloEnd           { "%]" }
+  powerEnd            { "^]" }
+  minEnd              { "<]" }
+  maxEnd              { ">]" }
+
+  // Command starting tokens
+  increaseStatStart { openScript "increase the " }
+  killStart { openScript "kill " }
+  setStatStart { openScript "set the " }
+  setStatusStart { openScript "set " }
+  impregnateStart { openScript "impregnate " }
+  fillPartStart { openScript "fill the " }
+  talkScriptStart { openScript "talk " }
 
   // Underlying things
   validTargets { "["? ( "player" | "looker" | "victor" | "loser" ) "]"? }
@@ -88,10 +126,13 @@ Number { number+ }
   textWithSpaces { ( " " | validCharacter)+ }
   whitespace { " " | "\n" }
   number { @digit+ }
-  openScript[closedBy=closeScript] { "[" }
-  closeScript[openedBy=openScript] { "]" }
+  openScript { "[" }
+  closeScript { "]" }
+  of { " of " }
+  by { " by " }
+  to { " to "}
 
-  @precedence { mathStart, openScript, closeScript, validCharacter }
+
 }
 
 @external propSource stringParsingHighlighting from "./highlight"

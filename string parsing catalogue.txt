@@ -191,14 +191,17 @@ description is used when power statuses are complicated by string parsing and ne
 
 Note, the below all require extra permissions not allowed within character descriptions (for obvious reasons)
 
-[increase the (stat) of [player] by (number)]
-   Will modify stats. Whole numbers only. Negative numbers are supported
+COMMANDS
 
-[set the (stat) of [player] to (number/string)]
-   Will set a stat to particular value, either a string or a number
+[increase the (stat) of [player] by (number)]
+[increase the (stat) of [player] by 3]
+   Will modify stats. Whole numbers only. Negative numbers are supported
 
 [kill (monster name)]
    Will attempt to kill an NPC (will not work on players)
+
+[set the (stat) of [player] to (number/string)]
+   Will set a stat to particular value, either a string or a number
 
 [set (status name) status of [player] to (magnitude) mag for (duration) rounds]
    Will set a status on the target with the values specified
@@ -207,7 +210,9 @@ Note, the below all require extra permissions not allowed within character descr
    Will attempt to impregnate the first target with the second as the father
 
 [fill the (part) of [player] by (number)]
+[fill the mouth of [player] by 1]
    Will increase the chosen part's filled-stat of the chosen target by the supplied number. Currently: Ass, Balls, Bladder, Breasts, Foot, Hand, Mouth, and Nipple are valid parts
 
 [talk (propdir) of [player]]
+[talk something of [player]]
    Starts a talkscript in rpsystem running, in talkscript/(propdir)/talk with [player] as the target

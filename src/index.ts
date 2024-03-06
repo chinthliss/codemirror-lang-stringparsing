@@ -2,7 +2,7 @@ import {parser} from "./stringparsing.grammar"
 import {LRLanguage, LanguageSupport, indentNodeProp, foldNodeProp, foldInside, delimitedIndent} from "@codemirror/language"
 import {styleTags, tags as t} from "@lezer/highlight"
 
-export const talkscriptLanguage = LRLanguage.define({
+export const stringParsingLanguage = LRLanguage.define({
     parser: parser.configure({
         props: [
             indentNodeProp.add({
@@ -25,6 +25,6 @@ export const talkscriptLanguage = LRLanguage.define({
     }
 })
 
-export function talkscript() {
-    return new LanguageSupport(talkscriptLanguage)
+export function stringParsing() {
+    return new LanguageSupport(stringParsingLanguage)
 }

@@ -1,6 +1,8 @@
 /node_modules
-package-lock.json
 /dist
-/src/*.js
-/src/*.d.ts
+package-lock.json
+
+# /src/*.js
+# /src/*.d.ts
+
 .idea/

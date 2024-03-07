@@ -1,0 +1,205 @@
+IF STATEMENTS
+
+[if STUFF][else][end if]
+   Logic statements
+
+[if STUFF][else if OTHER STUFF][else][end if]
+   Fancier logic statements. Using more than one [else if ] works as well
+
+[if time is (spring/summer/fall/winter)]
+[if time is not (spring/summer/fall/winter)]
+   Check if it is a certain season
+   Check if it is NOT a certain season
+
+[if time is (weekday)]
+[if time is not (weekday)]
+   Check if it is a certain day of the week (Monday/Tuesday/et cetera)
+   Check if it is NOT a certain day of the week
+
+[if time is (day/night/morning/afternoon/evening)]
+[if time is not (day/night/morning/afternoon/evening)]
+   Check if it is a certain time of day
+   Check if it is NOT a certain time of day
+
+Time:
+   Day: 8am-10pm (Everything not Night)
+   Night: 10pm-8am (Everything not Day)
+   Morning: 8am-12pm
+   Afternoon: 12pm-6pm
+   Evening: 6pm-10pm
+
+In the following sections, [target] may represent [player], [looker], [victor] or [loser]
+
+[if [target] is male]
+[if [target] is female]
+[if [target] is pure male]
+[if [target] is pure female]
+[if [target] is herm]
+[if [target] is neuter]
+   Does it have a cock?
+   Does it have a cunt?
+   Does it ONLY have a cock?
+   Does it ONLY have a cunt?
+   Does it have both cock and cunt?
+   Does it NOT have sexual organs?
+
+[if [target] is not male]
+[if [target] is not female]
+[if [target] is not pure male]
+[if [target] is not pure female]
+[if [target] is not herm]
+[if [target] is not neuter]
+   Does it NOT have a cock?
+   Does it NOT have a cunt?
+   Does it NOT only have a cock?
+   Does it NOT only have a cunt?
+   Does it NOT have both cock and cunt?
+   Does it have sexual organs?
+
+[if [target] (is/is not) feminine]
+[if [target] (is/is not) masculine]
+[if [target] (is/is not) hermy]
+[if [target] (is/is not) neutral]
+   Checks for APPEARANCE. Perks that make [target] look a certain gender will override biological assets. If no such perks are present, this is essentially the same as 'is pure female/pure male/herm/neuter'.
+
+[if [target] is fertile]
+   Are they female and ready to be impregnated?
+
+[if stat (stat name) of [target] = (string)]
+[if stat (stat name) of [target] == (number)]
+[if stat (stat name) of [target] > (number)]
+[if stat (stat name) of [target] < (number)]
+[if stat (stat name) of [target] != (number)]
+   Do stat comparisons!
+
+[if stat (stat name) of [target] does exist]
+[if stat (stat name) of [target] does not exist]
+   Checks to see if a stat has a value
+   Checks to see if a stat does NOT have a value
+
+[if account stat (stat name) = (string)]
+[if account stat (stat name) == (number)]
+[if account stat (stat name) > (number)]
+[if account stat (stat name) < (number)]
+[if account stat (stat name) != (number)]
+   Account stat comparisons
+
+[if (thing) owned by [target]]
+[if (thing) not owned by [target]]
+   Look for a power, jnote, or badge. NOTE: You can use [if (Thing 1|Thing 2|Thing 3) owned by [target]] as shorthand for a logical or within a single if.
+
+[if (flag) present in [target]]
+[if (flag) not present in [target]]
+   Look for a flag
+
+[if (item) possessed by [target] == (number)]
+[if (item) possessed by [target] > (number)]
+[if (item) possessed by [target] < (number)]
+[if (item) possessed by [target] != (number)]
+   Look for an item in [target]'s inventory. Checks for base name.
+   To check for existance, use [if (item) possessed by [target] > 0]
+   To check for nonexistance, use [if (item) possessed by [target] = 0]
+      DO NOT use '== 0' or 'does not exist' to check for nonexistance
+
+[if (item) possessed custom by [target] == (number)]
+[if (item) possessed custom by [target] > (number)]
+[if (item) possessed custom by [target] < (number)]
+[if (item) possessed custom by [target] != (number)]
+   Look for an item in [target]'s inventory. Checks for displayed name.
+   To check for existance, use [if (item) possessed by [target] > 0]
+   To check for nonexistance, use [if (item) possessed by [target] = 0]
+      DO NOT use '== 0' or 'does not exist' to check for nonexistance
+
+[if (item) equipped by [target] == (number)]
+[if (item) equipped by [target] > (number)]
+[if (item) equipped by [target] < (number)]
+[if (item) equipped by [target] != (number)]
+   Look for an item that [target] has equipped. Checks for base name.
+   To check for existance, use [if (item) equipped by [target] > 0]
+   To check for nonexistance, use [if (item) equipped by [target] = 0]
+      DO NOT use '== 0' or 'does not exist' to check for nonexistance
+
+[if (item) equipped custom by [target] == (number)]
+[if (item) equipped custom by [target] > (number)]
+[if (item) equipped custom by [target] < (number)]
+[if (item) equipped custom by [target] != (number)]
+   Look for an item that [target] has equipped. Checks for displayed name.
+   To check for existance, use [if (item) equipped by [target] > 0]
+   To check for nonexistance, use [if (item) equipped by [target] = 0]
+      DO NOT use '== 0' or 'does not exist' to check for nonexistance
+
+[if mass of [target] == (number)]
+[if mass of [target] > (number)]
+[if mass of [target] < (number)]
+[if mass of [target] != (number)]
+    Look for the total mass of [target] in kilograms
+
+[if the infection (infection) of [target] (==/>/</!=) (number)]
+   Compare the number of a certain mutation on [target]
+
+[if status (status name) of [target] (==/>/</!=) (number)]
+   Check for the magnitude of a status on [target]
+
+[if (string) = (string)]
+[if (number) == (number)]
+[if (number) > (number)]
+[if (number) < (number)]
+[if (number) != (number)]
+
+[if (string) ~= (regex search pattern)]
+   Does a PCRE comparison on the string, with the pattern provided
+
+[if [target] is player]
+[if [target] is not player]
+   Check if the target is or is not a player object
+
+[if city stat (stat) == (number)]
+[if city stat (stat) > (number)]
+[if city stat (stat) < (number)]
+[if city stat (stat) != (number)]
+   Check city-stats
+
+[if [target] likes (WI flag)]
+[if [target] dislikes (WI flag)]
+   Determine if [target] likes or dislikes something
+
+[if feral mode of <target> is <value>]
+   Fires if target has given feral status. Non-ferals will have "basic" as their status.
+
+[if var X = Y]
+   Check the value of a variable named X against a value Y. <, >, =, == and != also function
+
+Of course, what's an [if ] without and, or, and not? Luckily, we have those:
+
+[if (A) and (B)] -- Fires when both A and B are correct. Logical and
+[if (A) or (B)] -- Fires when either A or B is correct. Will also fire if both are correct. Logical or
+   Note: We prefer adding ()s around input in logical and/or statements for debugging purposes
+[if not (A)] -- Fires when A is false. Logical not
+
+But hey! What if we need both? You can, using this syntax:
+
+[if ((A) and (B)) or ((C) and (D))]
+   Will fire as expected
+   Word of warning. Do not omit the parentheses, or it will read this from left to right
+
+Also, as a word of advice, any true/false duality can be expressed in two-stage and-or or or-and logic-system (you will probably need not as well). If you want a relatively simple way of doing this, google-search for Karnaugh-maps
+
+CASE STATEMENTS
+
+In addition to [if ]-statements, you also have access to [case  ]-statements. The structure of a [case ]-statement is as follows:
+
+[case <statement>][when (target) <completion of statement>]text[end when][when (target) <different completion of statement>]different text[end when][when 1]default[end when][end case]
+
+The first part of the [case ] structure contains a <statement>. This is usually a repeating piece of tested logic you would include in an [if ]-statement. For example:
+
+You have [if stat xp of [player] > 100]tons of xp[else if stat xp of [player] > 75]lots and lots of xp[else if stat xp of [player] > 50]lots of xp[else if stat xp of [player] > 25]some xp[else]little xp[end if].
+
+The statement 'stat xp of [player] >' is repeated over and over in the nested if statements. It's repetitive and messy-looking. To fix this, we can use [case [stat xp of [player]] >] instead. The <statement> can be referenced in the [when ]-statements by simply using (target). For example, when you put in [when (target) 50], it would mean, in this [case ]-statement, [when [stat xp of [player]] > 50]. We add the [] around the stat xp of [player] so that the string parsing is resolved in the [case ]-statement rather than in each [when ]-statement.
+
+Remember that all [when ]-statements function like an [if ]-statement in that they must prove true or false. A <statement> is often a partial [if ]-statement criteria that you can include the additional parts of with each [when ]-statement's content. You could write it as [case [stat xp of [player]]][when (target) > 100][end when][end case] or [case [stat xp of [player]] >][when (target) 100][end when][end case] and have it fire exactly the same for that scenario. If using different comparisons, it is best to leave the comparisons in the [when ]-statements.
+
+The [when 1] statement is a default that will trigger if all the prior [when ]-statements have triggered false. In the example of the nested [if ]-statement, the item after the last [else] would be a default. We can rewrite the nested [if ]s like this:
+
+You have [case [stat xp of [player]] >][when (target) 100]tons of xp[end when][when (target) 75]lots and lots of xp[end when][when (target) 50]lots of xp[end when][when (target) 25]some xp[end when][when 1]little xp[end when][end case].
+
+This structure is easy to alter later on or fix without having to redundantly write the <statement> over and over again with potential for typos. Also, if you make sure to put all key string parsing in the case, such as using [stat xp of [player]] instead of stat xp of [player], you can streamline how fast a case runs. It will resolve the [stat xp of [player]] in the [case ]-statement and carry the value to the [when ]-statements rather than resolving in each [when ]-statement.

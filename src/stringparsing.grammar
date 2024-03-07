@@ -1,11 +1,11 @@
 @top StringParsing { (validCharacter | whitespace | script)* }
 
 script {
-  lookup | math | command | comment
+  function | math | command | comment
 }
 
-lookup[@isGroup=lookup] {
-  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | EnvironmentModifier | CityStat | DateTime | MoonPhase | PresentArea | WeatherValue
+function[@isGroup=function] {
+  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | EnvironmentModifier | CityStat | DateTime | MoonPhase | PresentArea | WeatherValue | End | LocalStatOf | AccountStatOf | StatOf
 }
 
 // Math
@@ -23,8 +23,8 @@ Max { maxStart (NumberOrScript " ")+ maxEnd }
 // Comments / Descriptions
 comment[@isGroup=comment] { Comment | Description }
 
-Comment { commentStart Text closeScript }
-Description { descriptionStart Text closeScript }
+Comment { commentStart matchUntilNextCloseScript closeScript }
+Description { descriptionStart matchUntilNextCloseScript closeScript }
 
 // Commands
 command[@isGroup=command] { IncreaseStat | Kill | SetStat | SetStatus | Impregnate | FillPart | TalkScript }
@@ -44,7 +44,7 @@ Number[@isGroup=parameter] { number+ }
 FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
 
 @tokens {
-  // Single word lookups
+  // Single word things
   PlayerName { openScript "player" closeScript }
   LookerName { openScript "looker" closeScript }
   VictorName { openScript "victor" closeScript }
@@ -55,6 +55,7 @@ FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
   SkinShortDescription { openScript "skin" closeScript }
   CockShortDescription { openScript "cock" closeScript }
   CuntShortDescription { openScript "cunt" closeScript }
+  End { openScript "end" closeScript }
 
   // Targeted lookups
   PronounOf { openScript "%" $[aAsSoOpPrR] of validTargets closeScript }
@@ -73,8 +74,11 @@ FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
   HpOf { openScript "hp" of validTargets closeScript }
   InfectionPartsOf { openScript "the infection " textWithSpaces of validTargets closeScript }
   StatusMagnitudeOf { openScript "status " textWithSpaces of validTargets closeScript }
+  StatOf { openScript "stat " textWithSpaces of validTargets closeScript }
+  LocalStatOf { openScript "lstat " textWithSpaces of validTargets closeScript }
+  AccountStatOf { openScript "account stat " textWithSpaces closeScript }
 
-  @precedence { DescriptionPartOf, TransformDescriptionPartOf, CityStat, validCharacter }
+  @precedence { DescriptionPartOf, TransformDescriptionPartOf, CityStat, AccountStatOf, validCharacter }
 
   @precedence { of, by, closeScript, textWithSpaces }
 
@@ -117,17 +121,20 @@ FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
   fillPartStart { openScript "fill the " }
   talkScriptStart { openScript "talk " }
 
-  // Underlying things
+  // Lists
   validTargets { "["? ( "player" | "looker" | "victor" | "loser" ) "]"? }
   allBodyParts { "torso" | "head" | "arm" | "leg" | "foot" | "hand" | "wing" | "tail" | "cock" | "cunt" | "ball" | "breast" | "clit" | "udder" | "teat" }
   mutableBodyParts { "arms" | "ass" | "head" | "legs" | "skin" | "torso" | "cock"}
   fillableBodyParts { "ass" | "balls" | "bladder" | "breasts" | "foot" | "hand" | "mouth" | "nipple" }
+
+  // Underlying things
   validCharacter { $[\x21-\x7e] }
   textWithSpaces { ( " " | validCharacter)+ }
   whitespace { " " | "\n" }
   number { @digit+ }
   openScript { "[" }
   closeScript { "]" }
+  matchUntilNextCloseScript { ![\]]+  }
   of { " of " }
   by { " by " }
   to { " to "}

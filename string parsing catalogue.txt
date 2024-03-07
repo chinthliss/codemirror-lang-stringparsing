@@ -1,165 +1,223 @@
-@top StringParsing { scriptOrText }
+Combined series of tests taken from all the +help files and annotated with some extra ones to help
+one
+[
+one
+]
 
-scriptOrText {
-  ( nonscript | script )+
-}
+[player]  -- Used to identify the person being looked at
+[looker]  -- Used to identify who is looking at a description
+[victor]  -- The victor
+[loser]   -- The loser
 
-script[@isGroup=script] {
-  function | math | command | comment
-}
+[owner]   -- Used to identify the person that the object was summoned by, if it is a pet
+[here]    -- Used to identify the room (not its name, its DB ref)
 
-nonscript[@isGroup=nonscript] {
-  (validCharacter | whitespace)
-}
+[command] -- The command used to see the current message. Look, shift, and so on
 
-function[@isGroup=function] {
-  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | EnvironmentModifier | CityStat | DateTime | MoonPhase | PresentArea | WeatherValue | End | LocalStatOf | AccountStatOf | StatOf | OneOf | RandomNumber
-}
+[skin]    -- Returns the primary user's description (Skin/Desc, NOT Skin/LongDesc). Safest to use in descs and transformations
+[cock]
+[cunt]
 
-// Math
-math[@isGroup=math] { Addition | Subtraction | Multiplication | Division | Modulo | Power | Min | Max }
+[skin of [player]]
+[cock of [player]]
+[cunt of [player]]
 
-Addition { additionStart (NumberOrScript " ")+ additionEnd }
-Subtraction { subtractionStart (NumberOrScript " ")+ subtractionEnd }
-Multiplication { multiplicationStart (NumberOrScript " ")+ multiplicationEnd }
-Division { divisionStart (NumberOrScript " ")+ divisionEnd }
-Modulo { moduloStart (NumberOrScript " ")+ moduloEnd }
-Power { powerStart (NumberOrScript " ")+ powerEnd }
-Min { minStart (NumberOrScript " ")+ minEnd }
-Max { maxStart (NumberOrScript " ")+ maxEnd }
+[%(letter) of [target]]
+[%A of [player]]
+[%a of player]
+   Pronoun subs. See help string parsing/Pronoun Replacements for details on subs available
 
-// Comments / Descriptions
-comment[@isGroup=comment] { Comment | Description }
+[size of [player]]
+   Returns the height of target
+   This value matches the numerical value at the top of size
 
-Comment { commentStart matchUntilNextCloseScript closeScript }
-Description { descriptionStart matchUntilNextCloseScript closeScript }
+Math
+[+ 1 2 3 +]     ( X + Y ) + Z
+[- 1 2 3 -]     ( X - Y ) - Z
+[* 1 2 3 *]     ( X * Y ) * Z
+[/ 1 2 3 /]     ( X / Y ) / Z
+[% 1 2 3 %]     ( X % Y ) % Z
+[^ 1 2 3 4 5 6 7 8 9 ^]     ( X ^ Y ) ^ Z
+[< 1 2 3 <]     picks the smallest number in the set
+[> 1 2 3 >]     picks the largest number in the set
+Valid (even if silly in some cases)
+[+ 1 2 +]
+[+ 1 [size of [looker]] +]
+[+ [size of [looker]] [size of [player]] +]
+Invalid (not a number)
+[+ test 3 +]
+Silly (but should still parse)
+[+ 5 [victor] +]
 
-// Commands
-command[@isGroup=command] { IncreaseStat | Kill | SetStat | SetStatus | Impregnate | FillPart | TalkScript }
-SetStat { setStatStart Text of Target to NumberOrScript closeScript }
-SetStatus { setStatusStart Text " status" of Target to NumberOrScript " mag for " Number " rounds" closeScript }
-IncreaseStat { increaseStatStart Text of Target by Number closeScript }
-Kill { killStart Text closeScript }
-Impregnate { impregnateStart Target " with " Target }
-FillPart { fillPartStart FillableBodyPart " of " Target by Number closeScript }
-TalkScript { talkScriptStart Text of Target closeScript }
-OneOf { oneOfStart (scriptOrText oneOfSeperator)+ scriptOrText oneOfEnd }
-RandomNumber { randomNumberStart Number " to " Number closeScript }
+[torso length of [player]]
+[head length of [player]]
+[arm length of [player]]
+[leg length of [player]]
+[foot length of [player]]
+[hand length of [player]]
+[wing length of [player]]
+[tail length of [player]]
+[cock length of [player]]
+[cunt length of [player]]
+[ball length of [player]]
+[breast length of [player]]
+[clit length of [player]]
+[udder length of [player]]
+[teat length of [player]]
 
-// Parameters (Mostly for highlighting)
-Text[@isGroup=parameter] { textWithSpaces }
-Target[@isGroup=parameter] { validTargets }
-NumberOrScript[@isGroup=parameter] { (number+ | script) }
-Number[@isGroup=parameter] { number+ }
-FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
+[formatted torso length of [player]]
+[formatted head length of [player]]
+[formatted arm length of [player]]
+[formatted leg length of [player]]
+[formatted foot length of [player]]
+[formatted hand length of [player]]
+[formatted wing length of [player]]
+[formatted tail length of [player]]
+[formatted cock length of [player]]
+[formatted cunt length of [player]]
+[formatted ball length of [player]]
+[formatted breast length of [player]]
+[formatted clit length of [player]]
+[formatted udder length of [player]]
+[formatted teat length of [player]]
 
-@tokens {
-  // Single word things
-  PlayerName { openScript "player" closeScript }
-  LookerName { openScript "looker" closeScript }
-  VictorName { openScript "victor" closeScript }
-  LoserName { openScript "loser" closeScript }
-  OwnerName { openScript "owner" closeScript }
-  HereName { openScript "here" closeScript }
-  CommandName { openScript "command" closeScript }
-  SkinShortDescription { openScript "skin" closeScript }
-  CockShortDescription { openScript "cock" closeScript }
-  CuntShortDescription { openScript "cunt" closeScript }
-  End { openScript "end" closeScript }
+[number of torsos of [player]]
+[number of heads of [player]]
+[number of arms of [player]]
+[number of legs of [player]]
+[number of foots of [player]]
+[number of hands of [player]]
+[number of wings of [player]]
+[number of tails of [player]]
+[number of cocks of [player]]
+[number of cunts of [player]]
+[number of balls of [player]]
+[number of breasts of [player]]
+[number of clits of [player]]
+[number of udders of [player]]
+[number of teats of [player]]
 
-  // Targeted lookups
-  PronounOf { openScript "%" $[aAsSoOpPrR] of validTargets closeScript }
-  SizeOf { openScript "size" of validTargets closeScript }
-  SkinOf { openScript "skin" of validTargets closeScript }
-  CockOf { openScript "cock" of validTargets closeScript }
-  CuntOf { openScript "cunt" of validTargets closeScript }
-  LengthOf { openScript allBodyParts " length" of validTargets closeScript }
-  FormattedLengthOf { openScript "formatted " allBodyParts " length" of validTargets closeScript }
-  NumberOf { openScript "number of " allBodyParts "s of " validTargets closeScript }
-  DailyCumOf { openScript "daily cum amount of " validTargets closeScript }
-  DailyMilkOf { openScript "daily milk amount of " validTargets closeScript }
-  AdjectiveSizeOf { openScript ( "breast" | "cock" | "cunt" ) " size" of  validTargets closeScript }
-  DescriptionPartOf { openScript "desc " mutableBodyParts of textWithSpaces closeScript }
-  TransformDescriptionPartOf { openScript "transform " mutableBodyParts of textWithSpaces closeScript }
-  HpOf { openScript "hp" of validTargets closeScript }
-  InfectionPartsOf { openScript "the infection " textWithSpaces of validTargets closeScript }
-  StatusMagnitudeOf { openScript "status " textWithSpaces of validTargets closeScript }
-  StatOf { openScript "stat " textWithSpaces of validTargets closeScript }
-  LocalStatOf { openScript "lstat " textWithSpaces of validTargets closeScript }
-  AccountStatOf { openScript "account stat " textWithSpaces closeScript }
-  
-  @precedence { DescriptionPartOf, TransformDescriptionPartOf, CityStat, AccountStatOf, validCharacter }
+[daily cum amount of [player]]
+[daily milk amount of [player]]
+    Will be replaced with the amount of cum or milk produced by the target per day. Note that similiar to the 'length of' parsing, the value here will always be returned in liters, not your chosen units.
 
-  @precedence { of, by, closeScript, textWithSpaces }
+[breast size of [player]]
+[cock size of [player]]
+[cunt size of [player]]
+   Returns the size adjective of the breasts of [player]
+   Returns the size adjective of the cock of [player]
+   Returns the size adjective of the cunt of [player]
 
-  // Other functions
-  EnvironmentModifier { openScript ( "heat" | "cold" | "water" | "nanite" ) closeScript }
-  CityStat { openScript "city stat " textWithSpaces closeScript }
-  PresentArea { openScript "area" closeScript }
-  DateTime { openScript ( "year" | "month" | "day" | "weekday" | "hour" | "minute" | "systime" ) closeScript }
-  MoonPhase { openScript "moon phase" " capitalized"? closeScript }
-  WeatherValue { openScript "weather " ( "id" | "dt" | "name" | "coord-lat" | "coord-lon" | "sys-country" | "sys-sunrise" | "sys-sunset" | "main-temp" | "main-temp_min" | "main-temp_max" | "main-pressure" | "main-sea_level" | "main-grnd_level" | "wind-speed" | "wind-deg" | "wind-gust" | "clouds-all" | "weather-id" | "weather-main" | "weather-description" | "weather-icon" | "rain-1h" | "rain-3h" | "snow-1h" | "snow-3h" ) closeScript  }
+[desc ass of (form test)]
+[transform head of (form)]
+   Results in the description of (part) on (form)
+   Results in the transform of (part) on (form)
+   Cannot be used in player-descs
 
-  oneOfStart { openScript "one of" closeScript }
-  oneOfSeperator { openScript "or" closeScript }
-  oneOfEnd { openScript "at random" closeScript }
+[hp of [player]]
+   Shows the current hp of the target as a percentage (for 100% it shows 100, 50% it shows 50, etcetera)
+   ALWAYS use [if [hp of [player]] when determining the hp of a [victor] or [loser] in Victory, oVictory, and Defeat messages
 
-  randomNumberStart { openScript "random " }
+[the infection test of [player]
+   Returns a number from 0 to 7 denoting how many infection slots matched the infection/regex
 
-  @precedence { oneOfStart, oneOfSeperator, oneOfEnd, textWithSpaces }
+[status (status name) of [player]]
+   Return the magnitude of the status named
 
-  // Comment / Descriptions
-  commentStart { openScript "comment=" }
-  descriptionStart { openScript "description=" }
+[systime]
+   Returns the current unix system time, for example 1333508965
 
-  // Math - all done separately as different names for clarity and because the end token has to match the start token
-  additionStart       { "[+ " }
-  subtractionStart    { "[- " }
-  multiplicationStart { "[* " }
-  divisionStart       { "[/ " }
-  moduloStart         { "[% " }
-  powerStart          { "[^ " }
-  minStart            { "[< " }
-  maxStart            { "[> " }
-  additionEnd         { "+]" }
-  subtractionEnd      { "-]" }
-  multiplicationEnd   { "*]" }
-  divisionEnd         { "/]" }
-  moduloEnd           { "%]" }
-  powerEnd            { "^]" }
-  minEnd              { "<]" }
-  maxEnd              { ">]" }
+[area]
+   Returns the area of the target's location
 
-  // Command starting tokens
-  increaseStatStart { openScript "increase the " }
-  killStart { openScript "kill " }
-  setStatStart { openScript "set the " }
-  setStatusStart { openScript "set " }
-  impregnateStart { openScript "impregnate " }
-  fillPartStart { openScript "fill the " }
-  talkScriptStart { openScript "talk " }
+[heat]
+[cold]
+[water]
+[nanite]
+   Returns the environment modifier for the current area the player is in
 
-  // Lists
-  validTargets { "["? ( "player" | "looker" | "victor" | "loser" ) "]"? }
-  allBodyParts { "torso" | "head" | "arm" | "leg" | "foot" | "hand" | "wing" | "tail" | "cock" | "cunt" | "ball" | "breast" | "clit" | "udder" | "teat" }
-  mutableBodyParts { "arms" | "ass" | "head" | "legs" | "skin" | "torso" | "cock"}
-  fillableBodyParts { "ass" | "balls" | "bladder" | "breasts" | "foot" | "hand" | "mouth" | "nipple" }
+[city stat (stat)]
+   Returns the city-stat specified for the city you are in
 
-  // Underlying things
-  validCharacter { $[\x21-\x7e] }
-  textWithSpaces { ( " " | validCharacter)+ }
-  whitespace { " " | "\n" }
-  number { @digit+ }
-  openScript { "[" }
-  closeScript { "]" }
-  matchUntilNextCloseScript { ![\]]+  }
-  of { " of " }
-  by { " by " }
-  to { " to "}
+Timekeeping:
+[year]
+[month]
+[day]
+[weekday]
+[hour]
+[minute]
 
+Weather:
+[weather (data required)]
+Data required is a - seperated list of the elements from https://openweathermap.org/weather-data
+All values are in imperial
+So to get the temp, you would use [weather main-temp] or for wind-speed [weather wind-speed]
+See help string parsing/weather for the available data.
 
-}
+Moon Phases:
+[moon phase] will return the phase the moon is in right now.
+[moon phase capitalized] will return the phase of the moon with capitalized first letters.
 
-@external propSource stringParsingHighlighting from "./highlight"
+Comments:
+[comment=(text)]
+[description=(text)]
+Both of these, when run through stringparsing, are simply removed. They must not have [ or ] in their text anywhere.
+comment is used primarily to comment on your code
+description is used when power statuses are complicated by string parsing and need a neat description to be displayed instead
 
-@detectDelim
+[stat (stat name) of [player]]
+   Show a stat
+
+[account stat (stat name)]
+   Show the player's account stat
+
+[lstat (stat name) of [player]]
+   Show a lstat instead of a system-stat
+   These are used to return player-set stats and check them in [if ] statements
+
+[end]
+   Used in Victory, oVictory, and Defeat to end the processing in that block if [end] remains after displaying that block
+   ONLY use for multi-line messages! These are not necessary unless you require a line break
+
+[one of][player][or]B[or]C[at random]test
+Nested random - [one of][player][player][or]B[or][one of][player][or]B[or]C[at random][at random]
+[random 1 to 3]
+   Display one of a set of strings at random
+   Results in a random number from 1 to 3 inclusive
+
+[feral mode of <target>]
+   Displays current feral mode of the target. This will default to "basic" if the target has none.
+
+[lowercase <string>]
+   Converts <string> to lower case. Can have other parsing nested, eg; [lowercase [skin of [player]]]
+
+[uppercase <string>]
+   Same as [lowercase <string>], but converts to upper case.
+
+Note, the below all require extra permissions not allowed within character descriptions (for obvious reasons)
+
+COMMANDS
+
+[increase the (stat) of [player] by (number)]
+[increase the (stat) of [player] by 3]
+   Will modify stats. Whole numbers only. Negative numbers are supported
+
+[kill (monster name)]
+   Will attempt to kill an NPC (will not work on players)
+
+[set the (stat) of [player] to (number/string)]
+   Will set a stat to particular value, either a string or a number
+
+[set (status name) status of [player] to (magnitude) mag for (duration) rounds]
+   Will set a status on the target with the values specified
+
+[impregnate [victor] with [loser]]]
+   Will attempt to impregnate the first target with the second as the father
+
+[fill the (part) of [player] by (number)]
+[fill the mouth of [player] by 1]
+   Will increase the chosen part's filled-stat of the chosen target by the supplied number. Currently: Ass, Balls, Bladder, Breasts, Foot, Hand, Mouth, and Nipple are valid parts
+
+[talk (propdir) of [player]]
+[talk something of [player]]
+   Starts a talkscript in rpsystem running, in talkscript/(propdir)/talk with [player] as the target

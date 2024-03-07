@@ -1,18 +1,16 @@
-@top StringParsing { scriptOrText }
+// Different from scriptOrText because it doesn't highlight non-script text
+@top StringParsing { (matchUntilNextOpenScript | script | '[')+ }
 
 scriptOrText {
-  ( nonscript | script )+
+  (Text | script | '[')+
 }
 
-script[@isGroup=script] {
-  function | math | command | comment
+script {
+  lookup | math | command | comment
 }
 
-nonscript[@isGroup=nonscript] {
-  (validCharacter | whitespace)
-}
-
-function[@isGroup=function] {
+// Functions
+lookup[@isGroup=lookup] {
   PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | EnvironmentModifier | CityStat | DateTime | MoonPhase | PresentArea | WeatherValue | End | LocalStatOf | AccountStatOf | StatOf | OneOf | RandomNumber
 }
 
@@ -47,9 +45,9 @@ OneOf { oneOfStart (scriptOrText oneOfSeparator)+ scriptOrText oneOfEnd }
 RandomNumber { randomNumberStart Number " to " Number closeScript }
 
 // Parameters (Mostly for highlighting)
-Text[@isGroup=parameter] { textWithSpaces }
+Text[@isGroup=parameter] { matchUntilNextOpenScript }
 Target[@isGroup=parameter] { validTargets }
-NumberOrScript[@isGroup=parameter] { (number+ | script) }
+NumberOrScript[@isGroup=parameter] { (Number | script) }
 Number[@isGroup=parameter] { number+ }
 FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
 
@@ -88,11 +86,9 @@ FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
   LocalStatOf { openScript "lstat " textWithSpaces of validTargets closeScript }
   AccountStatOf { openScript "account stat " textWithSpaces closeScript }
 
-  @precedence { DescriptionPartOf, TransformDescriptionPartOf, CityStat, AccountStatOf, validCharacter }
+  @precedence { DescriptionPartOf, TransformDescriptionPartOf, CityStat, AccountStatOf, '[' }
 
-  @precedence { of, by, closeScript, textWithSpaces }
-
-  // Other functions
+  // Other lookups
   EnvironmentModifier { openScript ( "heat" | "cold" | "water" | "nanite" ) closeScript }
   CityStat { openScript "city stat " textWithSpaces closeScript }
   PresentArea { openScript "area" closeScript }
@@ -101,12 +97,10 @@ FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
   WeatherValue { openScript "weather " ( "id" | "dt" | "name" | "coord-lat" | "coord-lon" | "sys-country" | "sys-sunrise" | "sys-sunset" | "main-temp" | "main-temp_min" | "main-temp_max" | "main-pressure" | "main-sea_level" | "main-grnd_level" | "wind-speed" | "wind-deg" | "wind-gust" | "clouds-all" | "weather-id" | "weather-main" | "weather-description" | "weather-icon" | "rain-1h" | "rain-3h" | "snow-1h" | "snow-3h" ) closeScript  }
 
   oneOfStart { openScript "one of" closeScript }
-  oneOfSeparator { openScript "or" closeScript }
+  oneOfSeparator[@name=Or] { openScript "or" closeScript }
   oneOfEnd { openScript "at random" closeScript }
 
   randomNumberStart { openScript "random " }
-
-  @precedence { oneOfStart, oneOfSeparator, oneOfEnd, textWithSpaces }
 
   // Comment / Descriptions
   commentStart { openScript "comment=" }
@@ -148,16 +142,15 @@ FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
   // Underlying things
   validCharacter { $[\x21-\x7e] }
   textWithSpaces { ( " " | validCharacter)+ }
-  whitespace { " " | "\n" }
+  //whitespace { " " | "\n" }
   number { @digit+ }
   openScript { "[" }
   closeScript { "]" }
+  matchUntilNextOpenScript { ![\[]+  }
   matchUntilNextCloseScript { ![\]]+  }
   of { " of " }
   by { " by " }
   to { " to "}
-
-
 }
 
 @external propSource stringParsingHighlighting from "./highlight"

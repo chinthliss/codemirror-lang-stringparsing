@@ -186,6 +186,8 @@ Nested random - [one of][player][player][or]B[or][one of][player][or]B[or]C[at r
    Results in a random number from 1 to 3 inclusive
 
 [feral mode of <target>]
+[feral mode of [player]]
+[feral mode of player]
    Displays current feral mode of the target. This will default to "basic" if the target has none.
 
 [lowercase <string>]

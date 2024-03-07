@@ -2,16 +2,16 @@
 @top StringParsing { (matchUntilNextOpenScript | script | '[')+ }
 
 scriptOrText {
-  (Text | script | '[')+
+  (TextUntilOpenScript | script | '[')+
 }
 
 script {
   lookup | math | command | comment
 }
 
-// Functions
+// Lookups
 lookup[@isGroup=lookup] {
-  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | EnvironmentModifier | CityStat | DateTime | MoonPhase | PresentArea | WeatherValue | End | LocalStatOf | AccountStatOf | StatOf | OneOf | RandomNumber
+  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | EnvironmentModifier | CityStat | DateTime | MoonPhase | PresentArea | WeatherValue | End | LocalStatOf | AccountStatOf | StatOf | OneOf | RandomNumber | FeralModeOf | UpperCase | LowerCase
 }
 
 // Math
@@ -34,18 +34,20 @@ Description { descriptionStart matchUntilNextCloseScript closeScript }
 
 // Commands
 command[@isGroup=command] { IncreaseStat | Kill | SetStat | SetStatus | Impregnate | FillPart | TalkScript }
-SetStat { setStatStart Text of Target to NumberOrScript closeScript }
-SetStatus { setStatusStart Text " status" of Target to NumberOrScript " mag for " Number " rounds" closeScript }
-IncreaseStat { increaseStatStart Text of Target by Number closeScript }
-Kill { killStart Text closeScript }
+SetStat { setStatStart TextWithSpaces of Target to NumberOrScript closeScript }
+SetStatus { setStatusStart TextWithSpaces " status" of Target to NumberOrScript " mag for " Number " rounds" closeScript }
+IncreaseStat { increaseStatStart TextWithSpaces of Target by Number closeScript }
+Kill { killStart TextWithSpaces closeScript }
 Impregnate { impregnateStart Target " with " Target }
 FillPart { fillPartStart FillableBodyPart " of " Target by Number closeScript }
-TalkScript { talkScriptStart Text of Target closeScript }
+TalkScript { talkScriptStart TextWithSpaces of Target closeScript }
 OneOf { oneOfStart (scriptOrText oneOfSeparator)+ scriptOrText oneOfEnd }
 RandomNumber { randomNumberStart Number " to " Number closeScript }
 
 // Parameters (Mostly for highlighting)
-Text[@isGroup=parameter] { matchUntilNextOpenScript }
+TextUntilOpenScript[@name=Text, @isGroup=parameter] { matchUntilNextOpenScript }
+TextUntilCloseScript[@name=Text, @isGroup=parameter] { matchUntilNextCloseScript }
+TextWithSpaces[@name=Text, @isGroup=parameter] { textWithSpaces }
 Target[@isGroup=parameter] { validTargets }
 NumberOrScript[@isGroup=parameter] { (Number | script) }
 Number[@isGroup=parameter] { number+ }
@@ -85,6 +87,9 @@ FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
   StatOf { openScript "stat " textWithSpaces of validTargets closeScript }
   LocalStatOf { openScript "lstat " textWithSpaces of validTargets closeScript }
   AccountStatOf { openScript "account stat " textWithSpaces closeScript }
+  FeralModeOf { openScript "feral mode" of validTargets closeScript }
+  LowerCase { openScript "lowercase " matchUntilNextCloseScript closeScript }
+  UpperCase { openScript "uppercase " matchUntilNextCloseScript closeScript }
 
   @precedence { DescriptionPartOf, TransformDescriptionPartOf, CityStat, AccountStatOf, '[' }
 

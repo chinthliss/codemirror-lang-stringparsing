@@ -6,7 +6,7 @@ scriptOrText {
 }
 
 script {
-  lookup | math | command | comment
+  lookup | math | command | comment | logic
 }
 
 // Lookups
@@ -26,11 +26,24 @@ Power { powerStart (NumberOrScript " ")+ powerEnd }
 Min { minStart (NumberOrScript " ")+ minEnd }
 Max { maxStart (NumberOrScript " ")+ maxEnd }
 
+
+
 // Comments / Descriptions
 comment[@isGroup=comment] { Comment | Description }
 
 Comment { commentStart matchUntilNextCloseScript closeScript }
 Description { descriptionStart matchUntilNextCloseScript closeScript }
+
+// Logic
+logic[@isGroup=logic] {
+  If
+}
+
+If {
+    StartIf (TextUntilCloseScript | script) closeScript
+    scriptOrText
+    EndIf
+}
 
 // Commands
 command[@isGroup=command] { IncreaseStat | Kill | SetStat | SetStatus | Impregnate | FillPart | TalkScript }
@@ -143,6 +156,12 @@ FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
   allBodyParts { "torso" | "head" | "arm" | "leg" | "foot" | "hand" | "wing" | "tail" | "cock" | "cunt" | "ball" | "breast" | "clit" | "udder" | "teat" }
   mutableBodyParts { "arms" | "ass" | "head" | "legs" | "skin" | "torso" | "cock"}
   fillableBodyParts { "ass" | "balls" | "bladder" | "breasts" | "foot" | "hand" | "mouth" | "nipple" }
+
+  // If
+  StartIf { openScript "if " }
+  ElseIf { openScript "else if " }
+  Else { openScript "else" closeScript }
+  EndIf { openScript "end if " closeScript }
 
   // Underlying things
   validCharacter { $[\x21-\x7e] }

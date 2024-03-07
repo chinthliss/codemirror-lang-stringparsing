@@ -1,11 +1,19 @@
-@top StringParsing { (validCharacter | whitespace | script)* }
+@top StringParsing { scriptOrText }
 
-script {
+scriptOrText {
+  ( nonscript | script )+
+}
+
+script[@isGroup=script] {
   function | math | command | comment
 }
 
+nonscript[@isGroup=nonscript] {
+  (validCharacter | whitespace)
+}
+
 function[@isGroup=function] {
-  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | EnvironmentModifier | CityStat | DateTime | MoonPhase | PresentArea | WeatherValue | End | LocalStatOf | AccountStatOf | StatOf
+  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | EnvironmentModifier | CityStat | DateTime | MoonPhase | PresentArea | WeatherValue | End | LocalStatOf | AccountStatOf | StatOf | OneOf
 }
 
 // Math
@@ -35,6 +43,7 @@ Kill { killStart Text closeScript }
 Impregnate { impregnateStart Target " with " Target }
 FillPart { fillPartStart FillableBodyPart " of " Target by Number closeScript }
 TalkScript { talkScriptStart Text of Target closeScript }
+OneOf { oneOfStart (scriptOrText oneOfSeperator)+ scriptOrText oneOfEnd }
 
 // Parameters (Mostly for highlighting)
 Text[@isGroup=parameter] { textWithSpaces }
@@ -89,6 +98,12 @@ FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
   DateTime { openScript ( "year" | "month" | "day" | "weekday" | "hour" | "minute" | "systime" ) closeScript }
   MoonPhase { openScript "moon phase" " capitalized"? closeScript }
   WeatherValue { openScript "weather " ( "id" | "dt" | "name" | "coord-lat" | "coord-lon" | "sys-country" | "sys-sunrise" | "sys-sunset" | "main-temp" | "main-temp_min" | "main-temp_max" | "main-pressure" | "main-sea_level" | "main-grnd_level" | "wind-speed" | "wind-deg" | "wind-gust" | "clouds-all" | "weather-id" | "weather-main" | "weather-description" | "weather-icon" | "rain-1h" | "rain-3h" | "snow-1h" | "snow-3h" ) closeScript  }
+
+  oneOfStart { openScript "one of" closeScript }
+  oneOfSeperator { openScript "or" closeScript }
+  oneOfEnd { openScript "at random" closeScript }
+
+  @precedence { oneOfStart, oneOfSeperator, oneOfEnd, textWithSpaces }
 
   // Comment / Descriptions
   commentStart { openScript "comment=" }

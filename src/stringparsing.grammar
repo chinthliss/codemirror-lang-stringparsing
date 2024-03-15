@@ -1,200 +1,141 @@
-@precedence { nestedScript }
 
-@skip { newLine }
 
-// Unhighlighted base
-@top StringParsing { script | text | "[" | "]" | " " }
+@top Document { (validCharWithoutOpenScript | script )* }
 
-scriptOrText { script | Text | "[" | "]" | " " } // Unhighlighted base
+scriptOrText { (validCharWithoutScript | script )* }
 
-ScriptOrText { scriptOrText }
+scriptOrNumber { (Number | script+) }
 
-// Parameters (Mostly for highlighting)
-Text { text }
-NumberOrScript[@isGroup=parameter] { (Number | script) }
-Target[@isGroup=parameter] { validTargets }
-Number[@isGroup=parameter] { number }
-FillableBodyPart[@isGroup=parameter] { fillableBodyParts }
+script { ( controlWords | comments | commands | lookupFunctions | utilityFunctions | math ) }
 
-script { // Not highlighted because each function should be
-  //lookup | math | command | comment | logic
-  lookup | math | command | comment
+controlWords[@isGroup=lookup] {
+  If | End
 }
 
-// Lookups
-lookup[@isGroup=lookup] {
-  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | EnvironmentModifier | CityStat | DateTime | MoonPhase | PresentArea | WeatherValue | End | LocalStatOf | AccountStatOf | StatOf | OneOf | RandomNumber | FeralModeOf | UpperCase | LowerCase
+comments[@isGroup=comment] { Comment | Description }
+
+commands[@isGroup=command] { IncreaseStat | Kill | SetStat | SetStatus | Impregnate | FillPart | TalkScript | OneOf | RandomNumber }
+
+lookupFunctions[@isGroup=lookup] {
+  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PresentArea | EnvironmentHeat | EnvironmentCold | EnvironmentWater | EnvironmentNanite | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | StatOf | LocalStatOf | AccountStatOf | FeralModeOf | CityStat | WeatherValue | MoonPhase
 }
 
+utilityFunctions[@isGroup=lookup] {
+  LowerCase | UpperCase | PresentYear | PresentMonth | PresentDay | PresentWeekday | PresentHour | PresentMinute | PresentTimestamp
+}
+
+math[@isGroup=math] { Addition | Subtraction | Multiplication | Division | Modulo | Power | Min | Max }
+
+//Logic
+If { "[if " IfTest "]" IfTrue "[end if]" }
+IfTest { scriptOrText }
+IfTrue { scriptOrText }
+
+//Math
+Addition       { "[+ " (scriptOrNumber " ")+ "+]" }
+Subtraction    { "[- " (scriptOrNumber " ")+ "-]" }
+Multiplication { "[* " (scriptOrNumber " ")+ "*]" }
+Division       { "[/ " (scriptOrNumber " ")+ "/]" }
+Modulo         { "[% " (scriptOrNumber " ")+ "%]" }
+Power          { "[^ " (scriptOrNumber " ")+ "^]" }
+Min            { "[< " (scriptOrNumber " ")+ "<]" }
+Max            { "[> " (scriptOrNumber " ")+ ">]" }
+
+// Comments
+Comment { "[comment=" matchUntilNextCloseScript "]" }
+Description { "[description="  matchUntilNextCloseScript "]" }
+
+// Simple lookups with no parameters
+PlayerName { "[player]" }
+LookerName { "[looker]" }
+VictorName { "[victor]" }
+LoserName { "[loser]" }
+OwnerName { "[owner]" }
+HereName { "[here]" }
+CommandName { "[command]" }
+SkinShortDescription { "[skin]" }
+CockShortDescription { "[cock]" }
+CuntShortDescription { "[cunt]" }
+PresentArea { "[area]" }
+EnvironmentHeat { "[heat]" }
+EnvironmentCold { "[cold]" }
+EnvironmentWater { "[water]" }
+EnvironmentNanite { "[nanite]" }
+PresentYear { "[year]" }
+PresentMonth { "[month]" }
+PresentDay { "[day]" }
+PresentWeekday { "[weekday]" }
+PresentHour { "[hour]" }
+PresentMinute { "[minute]" }
+PresentTimestamp { "[systime]" }
+
+// Lookups with parameters
 PronounOf { pronounOfStart " of " validTargets "]" }
 SizeOf { "[size of " validTargets "]" }
 SkinOf { "[skin of " validTargets "]" }
 CockOf { "[cock of " validTargets "]" }
 CuntOf { "[cunt of " validTargets "]" }
 LengthOf { lengthOfStart " of " validTargets "]" }
-FormattedLengthOf { formattedLengthOfStart " of " validTargets "]" }
-NumberOf { numberOfStart allBodyParts "s of " validTargets "]" }
-DailyCumOf { dailyCumOfStart " of " validTargets "]" }
-DailyMilkOf { dailyMilkOfStart " of " validTargets "]" }
-AdjectiveSizeOf { adjectiveSizeOf " of "  validTargets "]" }
-DescriptionPartOf { descriptionPartStart mutableBodyParts " of " !nestedScript ScriptOrText+ "]" }
-TransformDescriptionPartOf { "[transform " mutableBodyParts " of " !nestedScript ScriptOrText+ "]" }
-HpOf { hpOfStart " of " validTargets "]" }
-InfectionPartsOf { infectionPartsOfStart ScriptOrText+ " of " validTargets "]" }
-StatusMagnitudeOf { statusMagnitudeOfStart ScriptOrText+ " of " validTargets "]" }
-StatOf { statOfStart ScriptOrText+ " of " validTargets "]" }
-LocalStatOf { localStatOfStart !nestedScript ScriptOrText+ " of " validTargets "]" }
-AccountStatOf { accountStatOfStart !nestedScript ScriptOrText+ "]" }
-FeralModeOf { feralModeOfStart " of " validTargets "]" }
-LowerCase { lowerCaseStart !nestedScript ScriptOrText+ "]" }
-UpperCase { upperCaseStart !nestedScript ScriptOrText+ "]" }
-CityStat { cityStatStart !nestedScript ScriptOrText+ "]" }
+FormattedLengthOf { "[formatted " allBodyParts " length of " validTargets "]" }
+NumberOf { "[number of " allBodyParts "s of " validTargets "]" }
+DailyCumOf { "[daily cum amount of " validTargets "]" }
+DailyMilkOf { "[daily milk amount of " validTargets "]" }
+AdjectiveSizeOf { adjectiveSizeOfStart " size of "  validTargets "]" }
+DescriptionPartOf { "[desc " mutableBodyParts " of " scriptOrText "]" }
+TransformDescriptionPartOf { "[transform " mutableBodyParts " of " scriptOrText "]" }
+HpOf { "[hp of " validTargets "]" }
+InfectionPartsOf {"[the infection " scriptOrText " of " validTargets "]" }
+StatusMagnitudeOf { "[status " scriptOrText " of " validTargets "]" }
+StatOf { "[stat " scriptOrText " of " validTargets "]" }
+LocalStatOf { "[lstat " scriptOrText " of " validTargets "]" }
+AccountStatOf { "[account stat " scriptOrText "]" }
+FeralModeOf { "[feral mode of " validTargets "]" }
+LowerCase { "[lowercase " scriptOrText "]" }
+UpperCase { "[uppercase " scriptOrText "]" }
+CityStat { "[city stat " scriptOrText "]" }
 WeatherValue { "[weather " ( "id" | "dt" | "name" | "coord-lat" | "coord-lon" | "sys-country" | "sys-sunrise" | "sys-sunset" | "main-temp" | "main-temp_min" | "main-temp_max" | "main-pressure" | "main-sea_level" | "main-grnd_level" | "wind-speed" | "wind-deg" | "wind-gust" | "clouds-all" | "weather-id" | "weather-main" | "weather-description" | "weather-icon" | "rain-1h" | "rain-3h" | "snow-1h" | "snow-3h" ) "]"  }
-
-// Math
-math[@isGroup=math] { Addition | Subtraction | Multiplication | Division | Modulo | Power | Min | Max }
-
-Addition { additionStart ( NumberOrScript )+ additionEnd }
-Subtraction { subtractionStart (NumberOrScript " ")+ subtractionEnd }
-Multiplication { multiplicationStart (NumberOrScript " ")+ multiplicationEnd }
-Division { divisionStart (NumberOrScript " ")+ divisionEnd }
-Modulo { moduloStart (NumberOrScript " ")+ moduloEnd }
-Power { powerStart (NumberOrScript " ")+ powerEnd }
-Min { minStart (NumberOrScript " ")+ minEnd }
-Max { maxStart (NumberOrScript " ")+ maxEnd }
-
-// Comments / Descriptions
-comment[@isGroup=comment] { Comment | Description }
-
-Comment { commentStart matchUntilNextCloseScript "]" }
-Description { descriptionStart matchUntilNextCloseScript "]" }
-
-// Logic
-logic[@isGroup=logic] {
-  If
-}
-
-If {
-    StartIf (TextUntil"]" | script) "]"
-    scriptOrText+
-    EndIf
-}
+MoonPhase { "[moon phase" " capitalized"? "]" }
 
 // Commands
-command[@isGroup=command] { IncreaseStat | Kill | SetStat | SetStatus | Impregnate | FillPart | TalkScript }
-SetStat { setStatStart ScriptOrText+ " of " Target to NumberOrScript "]" }
-SetStatus { setStatusStart ScriptOrText+ status " of " Target to NumberOrScript magFor Number " rounds]" }
-IncreaseStat { increaseStatStart ScriptOrText+ " of " Target by Number "]" }
-Kill { killStart !nestedScript ScriptOrText+ "]" }
-Impregnate { impregnateStart Target " with " Target }
-FillPart { fillPartStart FillableBodyPart " of " Target by Number "]" }
-TalkScript { talkScriptStart ScriptOrText+ " of " Target "]" }
-OneOf { oneOfStart (ScriptOrText+ oneOfSeparator)+ ScriptOrText+ oneOfEnd }
-RandomNumber { randomNumberStart Number to Number "]" }
+SetStat { "[set the " scriptOrText " of " Target " to " scriptOrNumber "]" }
+SetStatus { "[set " scriptOrText " status of " Target " to " scriptOrNumber " mag for " Number " rounds]" }
+IncreaseStat { "[increase the " scriptOrText " of " Target " by " Number "]" }
+Kill { "[kill " scriptOrText "]" }
+Impregnate { "[impregnate " Target " with " Target "]" }
+FillPart { "[fill the " fillableBodyParts " of " Target " by " Number "]" }
+TalkScript { "[talk " scriptOrText " of " Target "]" }
+OneOf { "[one of]" (scriptOrText "[or]")+ scriptOrText "[at random]" }
+RandomNumber { "[random " scriptOrText " to " scriptOrText "]" }
+
+// End block, for multiline?
+End { "[end]" }
+
+// Parameters
+validTargets { ( Player | Looker | Victor | Loser ) | scriptOrText }
+Player[@isGroup=parameter] { "player" }
+Looker[@isGroup=parameter] { "looker" }
+Victor[@isGroup=parameter] { "victor" }
+Loser[@isGroup=parameter] { "loser" }
+
+Target[@isGroup=parameter] { validTargets }
+Number[@isGroup=parameter] { number }
 
 @tokens {
-  // Single word things
-  PlayerName { "[player]" }
-  LookerName { "[looker]" }
-  VictorName { "[victor]" }
-  LoserName { "[loser]" }
-  OwnerName { "[owner]" }
-  HereName { "[here]" }
-  CommandName { "[command]" }
-  SkinShortDescription { "[skin]" }
-  CockShortDescription { "[cock]" }
-  CuntShortDescription { "[cunt]" }
-  End { "[end]" }
-  PresentArea { "[area]" }
-  EnvironmentModifier { "[" ( "heat" | "cold" | "water" | "nanite" ) "]" }
-
-  oneOfStart { "[one of]" }
-  oneOfSeparator[@name=Or] { "[or]" }
-  oneOfEnd { "[at random]" }
-
-  randomNumberStart { "[random " }
-
-  // Comment / Descriptions
-  commentStart { "[comment=" }
-  descriptionStart { "[description=" }
-
-  // Math - all done separately as different names for clarity and because the end token has to match the start token
-  additionStart       { "[+ " }
-  subtractionStart    { "[- " }
-  multiplicationStart { "[* " }
-  divisionStart       { "[/ " }
-  moduloStart         { "[% " }
-  powerStart          { "[^ " }
-  minStart            { "[< " }
-  maxStart            { "[> " }
-  additionEnd         { "+]" }
-  subtractionEnd      { "-]" }
-  multiplicationEnd   { "*]" }
-  divisionEnd         { "/]" }
-  moduloEnd           { "%]" }
-  powerEnd            { "^]" }
-  minEnd              { "<]" }
-  maxEnd              { ">]" }
-
-  // Lookup starting tokens
+  validCharWithoutOpenScript { $[\n\x20-\x5a\x5c-\x7f] }
+  validCharWithoutScript { $[\n\x20-\x5a\x5c\x5e-\x7f] }
+  matchUntilNextCloseScript { ![\]\n]+ } // For comment blocks
+  number { @digit+ }
+  
+  //These ones get a token so they don't match with a single [
   lengthOfStart { "[" allBodyParts " length" }
-  formattedLengthOfStart { "[formatted " allBodyParts " length" }
-  numberOfStart { "[number of " }
-  dailyCumOfStart { "[daily cum amount" }
-  dailyMilkOfStart { "[dailky milk amount" }
-  adjectiveSizeOf { "[" ( "breast" | "cock" | "cunt" ) " size" }
-  descriptionPartStart { "[desc "}
-  pronounOfStart { "[%" ( 'a' | 'A' | 's' | 'S' | 'o' | 'O' | 'p' | 'P' | 'r' | 'R') }
-  cityStatStart { "[city stat " }
-  hpOfStart { "[hp " }
-  infectionPartsOfStart { "[the infection " }
-  statusMagnitudeOfStart { "[status " }
-  statOfStart { "[stat " }
-  localStatOfStart { "[lstat " }
-  accountStatOfStart { "[account stat "}
-  feralModeOfStart { "[feral mode "}
-  lowerCaseStart { "[lowercase "}
-  upperCaseStart { "[uppercase "}
-  DateTime { "[" ( "year" | "month" | "day" | "weekday" | "hour" | "minute" | "systime" ) "]" }
-  MoonPhase { "[moon phase" " capitalized"? "]" }
+  adjectiveSizeOfStart { "[" ( "breast" | "cock" | "cunt" ) }
 
+  //Pronounces get a token to avoid confusing them with math.modulo
+  pronounOfStart { "[%" ('a' | 'A' | 's'| 'S'| 'o'| 'O'| 'p'| 'P'| 'r'| 'R') }
 
-  // Command starting tokens
-  increaseStatStart { "[increase the " }
-  killStart { "[kill " }
-  setStatStart { "[set the " }
-  setStatusStart { "[set " }
-  impregnateStart { "[impregnate " }
-  fillPartStart { "[fill the " }
-  talkScriptStart { "[talk " }
-
-  // Lists
-  validTargets { "["? ( "player" | "looker" | "victor" | "loser" ) "]"? }
   allBodyParts { "torso" | "head" | "arm" | "leg" | "foot" | "hand" | "wing" | "tail" | "cock" | "cunt" | "ball" | "breast" | "clit" | "udder" | "teat" }
   mutableBodyParts { "arms" | "ass" | "head" | "legs" | "skin" | "torso" | "cock"}
   fillableBodyParts { "ass" | "balls" | "bladder" | "breasts" | "foot" | "hand" | "mouth" | "nipple" }
-
-  // If
-  StartIf { "[if " }
-  ElseIf { "[else if " }
-  Else { "[else]" }
-  EndIf { "[end if]" }
-
-  // Underlying things
-  newLine { $[\n] }
-  anyNonControlCharacter { $[\x21-\x5A\x5C\x5E-\x7E] }
-  text { anyNonControlCharacter+ }
-  number { @digit+ }
-  matchUntilNextCloseScript { ![\]\n ]+ } // For comment blocks
-
-  by { " by " }
-  to { " to " }
-  status { " status " }
-  magFor { " mag for " }
-
-  @precedence { number, text }
-  @precedence { additionEnd, text }
-
 }
 
 @external propSource stringParsingHighlighting from "./highlight"

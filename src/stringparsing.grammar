@@ -9,29 +9,36 @@ scriptOrNumber { (Number | script+) }
 script { ( controlWords | comments | commands | lookupFunctions | utilityFunctions | math ) }
 
 controlWords[@isGroup=lookup] {
-  If | End
+  If | End | OneOf
 }
 
 comments[@isGroup=comment] { Comment | Description }
 
-commands[@isGroup=command] { IncreaseStat | Kill | SetStat | SetStatus | Impregnate | FillPart | TalkScript | OneOf | RandomNumber }
+commands[@isGroup=command] { IncreaseStat | Kill | SetStat | SetStatus | Impregnate | FillPart | TalkScript }
 
 lookupFunctions[@isGroup=lookup] {
   PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PresentArea | EnvironmentHeat | EnvironmentCold | EnvironmentWater | EnvironmentNanite | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | StatOf | LocalStatOf | AccountStatOf | FeralModeOf | CityStat | WeatherValue | MoonPhase
 }
 
 utilityFunctions[@isGroup=lookup] {
-  LowerCase | UpperCase | PresentYear | PresentMonth | PresentDay | PresentWeekday | PresentHour | PresentMinute | PresentTimestamp
+  LowerCase | UpperCase | PresentYear | PresentMonth | PresentDay | PresentWeekday | PresentHour | PresentMinute | PresentTimestamp | RandomNumber
 }
 
 math[@isGroup=math] { Addition | Subtraction | Multiplication | Division | Modulo | Power | Min | Max }
 
-//Logic
-If { "[if " IfTest "]" IfTrue "[end if]" }
+// Control / Logic
+If { "[if " IfTest "]" IfTrue ("[else if " IfTest "]" IfTrue)* ("[else]" IfFalse)? "[end if]" }
 IfTest { scriptOrText }
 IfTrue { scriptOrText }
+IfFalse { scriptOrText }
 
-//Math
+OneOf { "[one of]" (scriptOrText "[or]")+ scriptOrText "[at random]" }
+
+// End block, for multiline?
+End { "[end]" }
+
+
+// Math
 Addition       { "[+ " (scriptOrNumber " ")+ "+]" }
 Subtraction    { "[- " (scriptOrNumber " ")+ "-]" }
 Multiplication { "[* " (scriptOrNumber " ")+ "*]" }
@@ -61,13 +68,6 @@ EnvironmentHeat { "[heat]" }
 EnvironmentCold { "[cold]" }
 EnvironmentWater { "[water]" }
 EnvironmentNanite { "[nanite]" }
-PresentYear { "[year]" }
-PresentMonth { "[month]" }
-PresentDay { "[day]" }
-PresentWeekday { "[weekday]" }
-PresentHour { "[hour]" }
-PresentMinute { "[minute]" }
-PresentTimestamp { "[systime]" }
 
 // Lookups with parameters
 PronounOf { pronounOfStart " of " validTargets "]" }
@@ -90,11 +90,21 @@ StatOf { "[stat " scriptOrText " of " validTargets "]" }
 LocalStatOf { "[lstat " scriptOrText " of " validTargets "]" }
 AccountStatOf { "[account stat " scriptOrText "]" }
 FeralModeOf { "[feral mode of " validTargets "]" }
-LowerCase { "[lowercase " scriptOrText "]" }
-UpperCase { "[uppercase " scriptOrText "]" }
 CityStat { "[city stat " scriptOrText "]" }
 WeatherValue { "[weather " ( "id" | "dt" | "name" | "coord-lat" | "coord-lon" | "sys-country" | "sys-sunrise" | "sys-sunset" | "main-temp" | "main-temp_min" | "main-temp_max" | "main-pressure" | "main-sea_level" | "main-grnd_level" | "wind-speed" | "wind-deg" | "wind-gust" | "clouds-all" | "weather-id" | "weather-main" | "weather-description" | "weather-icon" | "rain-1h" | "rain-3h" | "snow-1h" | "snow-3h" ) "]"  }
 MoonPhase { "[moon phase" " capitalized"? "]" }
+
+// Utilities
+LowerCase { "[lowercase " scriptOrText "]" }
+UpperCase { "[uppercase " scriptOrText "]" }
+RandomNumber { "[random " scriptOrText " to " scriptOrText "]" }
+PresentYear { "[year]" }
+PresentMonth { "[month]" }
+PresentDay { "[day]" }
+PresentWeekday { "[weekday]" }
+PresentHour { "[hour]" }
+PresentMinute { "[minute]" }
+PresentTimestamp { "[systime]" }
 
 // Commands
 SetStat { "[set the " scriptOrText " of " Target " to " scriptOrNumber "]" }
@@ -104,11 +114,6 @@ Kill { "[kill " scriptOrText "]" }
 Impregnate { "[impregnate " Target " with " Target "]" }
 FillPart { "[fill the " fillableBodyParts " of " Target " by " Number "]" }
 TalkScript { "[talk " scriptOrText " of " Target "]" }
-OneOf { "[one of]" (scriptOrText "[or]")+ scriptOrText "[at random]" }
-RandomNumber { "[random " scriptOrText " to " scriptOrText "]" }
-
-// End block, for multiline?
-End { "[end]" }
 
 // Parameters
 validTargets { ( Player | Looker | Victor | Loser ) | scriptOrText }

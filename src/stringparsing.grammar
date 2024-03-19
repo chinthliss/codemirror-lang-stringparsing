@@ -32,7 +32,8 @@ IfTest { scriptOrText }
 IfTrue { scriptOrText }
 IfFalse { scriptOrText }
 
-OneOf { "[one of]" (scriptOrText "[or]")+ scriptOrText "[at random]" }
+OneOf { "[one of]" (scriptOrText "[or]")+ scriptOrText
+       ( "[at random]" | "[with odds: " scriptOrNumber ( " " scriptOrNumber )+ "]")  }
 
 // End block, for multiline?
 End { "[end]" }

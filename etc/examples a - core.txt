@@ -185,6 +185,9 @@ Nested random - [one of][player][player][or]B[or][one of][player][or]B[or]C[at r
    Display one of a set of strings at random
    Results in a random number from 1 to 3 inclusive
 
+Weighted random:
+[one of]A[or]B[or]C[with odds: 1 2 3]
+
 [feral mode of <target>]
 [feral mode of [player]]
 [feral mode of player]

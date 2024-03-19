@@ -9,7 +9,7 @@ scriptOrNumber { (Number | script+) }
 script { ( controlWords | comments | commands | lookupFunctions | utilityFunctions | math | variables ) }
 
 controlWords[@isGroup=lookup] {
-  If | End | OneOf
+  If | End
 }
 
 comments[@isGroup=comment] { Comment | Description }
@@ -21,7 +21,7 @@ lookupFunctions[@isGroup=lookup] {
 }
 
 utilityFunctions[@isGroup=lookup] {
-  LowerCase | UpperCase | PresentYear | PresentMonth | PresentDay | PresentWeekday | PresentHour | PresentMinute | PresentTimestamp | RandomNumber
+  LowerCase | UpperCase | PresentYear | PresentMonth | PresentDay | PresentWeekday | PresentHour | PresentMinute | PresentTimestamp | RandomNumber | OneOf
 }
 
 variables[@isGroup=variable] {
@@ -31,13 +31,16 @@ variables[@isGroup=variable] {
 math[@isGroup=math] { Addition | Subtraction | Multiplication | Division | Modulo | Power | Min | Max }
 
 // Control / Logic
-If { "[if " IfTest "]" IfTrue ("[else if " IfTest "]" IfTrue)* ("[else]" IfFalse)? "[end if]" }
-IfTest { scriptOrText }
+If {
+  "[if " IfTest "]" IfTrue
+  ("[else if " IfTest "]" IfTrue)*
+  ("[else]" IfFalse)? "[end if]"
+}
+IfTest { scriptOrText (comparison scriptOrText)? }
 IfTrue { scriptOrText }
 IfFalse { scriptOrText }
 
-OneOf { "[one of]" (scriptOrText "[or]")+ scriptOrText
-       ( "[at random]" | "[with odds: " scriptOrNumber ( " " scriptOrNumber )+ "]")  }
+comparison { " is " | " is not " | " present in " | " not present in " } // Needs "=" | "!=" | "==" | ">" | "<"
 
 // End block, for multiline?
 End { "[end]" }
@@ -110,6 +113,9 @@ PresentWeekday { "[weekday]" }
 PresentHour { "[hour]" }
 PresentMinute { "[minute]" }
 PresentTimestamp { "[systime]" }
+OneOf { "[one of]" (scriptOrText "[or]")+ scriptOrText
+       ( "[at random]" | "[with odds: " scriptOrNumber ( " " scriptOrNumber )+ "]")  }
+
 
 
 // Variables
@@ -136,8 +142,8 @@ Target[@isGroup=parameter] { validTargets }
 Number[@isGroup=parameter] { number }
 
 @tokens {
-  validCharWithoutOpenScript { $[\n\x20-\x5a\x5c-\x7f] }
-  validCharWithoutScript { $[\n\x20-\x5a\x5c\x5e-\x7f] }
+  validCharWithoutOpenScript { $[\n\x20-\x5a\x5c-\x7e] }
+  validCharWithoutScript { $[\n\x20-\x5a\x5c\x5e-\x7e] }
   matchUntilNextCloseScript { ![\]\n]+ } // For comment blocks
   number { @digit+ }
   

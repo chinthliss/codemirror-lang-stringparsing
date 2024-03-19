@@ -36,7 +36,7 @@ If {
   ("[else if " IfTest "]" IfTrue)*
   ("[else]" IfFalse)? "[end if]"
 }
-IfTest { scriptOrText (comparison scriptOrText)? }
+IfTest[@isGroup=comparison] { scriptOrText (comparison scriptOrText)? }
 IfTrue { scriptOrText }
 IfFalse { scriptOrText }
 

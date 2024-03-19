@@ -6,7 +6,7 @@ scriptOrText { (validCharWithoutScript | script )* }
 
 scriptOrNumber { (Number | script+) }
 
-script { ( controlWords | comments | commands | lookupFunctions | utilityFunctions | math ) }
+script { ( controlWords | comments | commands | lookupFunctions | utilityFunctions | math | variables ) }
 
 controlWords[@isGroup=lookup] {
   If | End | OneOf
@@ -22,6 +22,10 @@ lookupFunctions[@isGroup=lookup] {
 
 utilityFunctions[@isGroup=lookup] {
   LowerCase | UpperCase | PresentYear | PresentMonth | PresentDay | PresentWeekday | PresentHour | PresentMinute | PresentTimestamp | RandomNumber
+}
+
+variables[@isGroup=variable] {
+  ReadVariable | WriteVariable
 }
 
 math[@isGroup=math] { Addition | Subtraction | Multiplication | Division | Modulo | Power | Min | Max }
@@ -106,6 +110,11 @@ PresentWeekday { "[weekday]" }
 PresentHour { "[hour]" }
 PresentMinute { "[minute]" }
 PresentTimestamp { "[systime]" }
+
+
+// Variables
+WriteVariable { "[var write " scriptOrText " to " scriptOrText "]" }
+ReadVariable { "[var read " scriptOrText "]" }
 
 // Commands
 SetStat { "[set the " scriptOrText " of " Target " to " scriptOrNumber "]" }

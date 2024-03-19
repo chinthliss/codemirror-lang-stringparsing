@@ -203,3 +203,33 @@ The [when 1] statement is a default that will trigger if all the prior [when ]-s
 You have [case [stat xp of [player]] >][when (target) 100]tons of xp[end when][when (target) 75]lots and lots of xp[end when][when (target) 50]lots of xp[end when][when (target) 25]some xp[end when][when 1]little xp[end when][end case].
 
 This structure is easy to alter later on or fix without having to redundantly write the <statement> over and over again with potential for typos. Also, if you make sure to put all key string parsing in the case, such as using [stat xp of [player]] instead of stat xp of [player], you can streamline how fast a case runs. It will resolve the [stat xp of [player]] in the [case ]-statement and carry the value to the [when ]-statements rather than resolving in each [when ]-statement.
+
+VARIABLES
+
+Variables write a value to a short string that can be referenced later within the same property.
+Using variables, you can avoid reiterating bulky if-statements several times.
+
+The primary differences between variables and performing write operations with [set ] are as follows:
+    -- Variables work within the same property they're created in.
+    -- Variables do not set a permanent stat on a target object.
+    -- Variables are ephemeral. Any stored variables are removed at the end of a property.
+    -- Variables are NOT case-sensitive. X and x are the same variable.
+
+Syntax for storing and reading variables are as follows:
+    [var write X to Y]
+    -- Sets X to the value Y.
+    -- The variable X will store the value Y and display it when called through a read operation.
+    [var read X]
+    -- Reads the variable X.
+    -- If the variable does not exist, this returns an empty string (no characters).
+    [if var X =/</>/==/!= Z]
+    -- Shorthand version of [if [var read X] ...]
+    -- Only = and != work to compare two strings.
+
+For a more practical example, see the following strings:
+
+[if ([player] = [looker]) and (time is evening) and (stat pancakes of [player] == 1)]Stuff. [end if]Generic stuff[if ([player] = [looker]) and (time is evening) and (stat pancakes of [player] == 1)], more specific stuff[end if].
+
+[if ([player] = [looker]) and (time is evening) and (stat pancakes of [player] == 1)]Stuff. [var write X to 1][end if]Generic stuff[if var X == 1], more specific stuff[end if].
+
+Using a variable, your code becomes both shorter and more readable.

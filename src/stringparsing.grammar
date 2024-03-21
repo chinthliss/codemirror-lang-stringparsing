@@ -36,11 +36,9 @@ If {
   ("[else if " IfTest "]" IfTrue)*
   ("[else]" IfFalse)? "[end if]"
 }
-IfTest[@isGroup=comparison] { scriptOrText (comparison scriptOrText)? }
+IfTest[@isGroup=comparison] { scriptOrText }
 IfTrue { scriptOrText }
 IfFalse { scriptOrText }
-
-comparison { " is " | " is not " | " present in " | " not present in " } // Needs "=" | "!=" | "==" | ">" | "<"
 
 // End block, for multiline?
 End { "[end]" }

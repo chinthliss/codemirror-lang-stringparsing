@@ -1,0 +1,39 @@
+# If
+
+[if test]True[end if]
+
+==>
+
+Document(
+    If(IfTest, IfTrue)
+)
+
+# If-Else
+
+[if test]True[else]False[end if]
+
+==>
+
+Document(
+    If(IfTest, IfTrue, IfFalse)
+)
+
+# If-ElseIf-Else
+
+[if test]True[else if test]both true[else]False[end if]
+
+==>
+
+Document(
+    If(IfTest, IfTrue, IfTest, IfTrue, IfFalse)
+)
+
+# Longer nested test
+
+[if longer test of something]True[end if]
+
+==>
+
+Document(
+    If(IfTest, IfTrue)
+)

@@ -1,10 +1,6 @@
+@top Document { scriptOrWord }
 
-
-@top Document { (validCharWithoutOpenScript | script )* }
-
-scriptOrText { (validCharWithoutScript | script )* }
-
-scriptOrNumber { (Number | script+) }
+scriptOrWord { (word | script)+ }
 
 script { ( controlWords | comments | commands | lookupFunctions | utilityFunctions | math | variables ) }
 
@@ -32,27 +28,26 @@ math[@isGroup=math] { Addition | Subtraction | Multiplication | Division | Modul
 
 // Control / Logic
 If {
-  "[if " IfTest "]" IfTrue
-  ("[else if " IfTest "]" IfTrue)*
+  "[if" IfTest "]" IfTrue
+  ("[else if" IfTest "]" IfTrue)*
   ("[else]" IfFalse)? "[end if]"
 }
-IfTest[@isGroup=comparison] { scriptOrText }
-IfTrue { scriptOrText }
-IfFalse { scriptOrText }
+IfTest[@isGroup=comparison] { scriptOrWord }
+IfTrue { scriptOrWord }
+IfFalse { scriptOrWord }
 
 // End block, for multiline?
 End { "[end]" }
 
-
 // Math
-Addition       { "[+ " (scriptOrNumber " ")+ "+]" }
-Subtraction    { "[- " (scriptOrNumber " ")+ "-]" }
-Multiplication { "[* " (scriptOrNumber " ")+ "*]" }
-Division       { "[/ " (scriptOrNumber " ")+ "/]" }
-Modulo         { "[% " (scriptOrNumber " ")+ "%]" }
-Power          { "[^ " (scriptOrNumber " ")+ "^]" }
-Min            { "[< " (scriptOrNumber " ")+ "<]" }
-Max            { "[> " (scriptOrNumber " ")+ ">]" }
+Addition       { "[+ " scriptOrWord " +]" }
+Subtraction    { "[- " scriptOrWord " -]" }
+Multiplication { "[* " scriptOrWord " *]" }
+Division       { "[/ " scriptOrWord " /]" }
+Modulo         { "[% " scriptOrWord " %]" }
+Power          { "[^ " scriptOrWord " ^]" }
+Min            { "[< " scriptOrWord " <]" }
+Max            { "[> " scriptOrWord " >]" }
 
 // Comments
 Comment { "[comment=" matchUntilNextCloseScript "]" }
@@ -76,34 +71,34 @@ EnvironmentWater { "[water]" }
 EnvironmentNanite { "[nanite]" }
 
 // Lookups with parameters
-PronounOf { pronounOfStart " of " validTargets "]" }
+PronounOf { pronounOfStart kw<'of'> validTargets "]" }
 SizeOf { "[size of " validTargets "]" }
 SkinOf { "[skin of " validTargets "]" }
 CockOf { "[cock of " validTargets "]" }
 CuntOf { "[cunt of " validTargets "]" }
-LengthOf { lengthOfStart " of " validTargets "]" }
+LengthOf { lengthOfStart kw<'of'> validTargets "]" }
 FormattedLengthOf { "[formatted " allBodyParts " length of " validTargets "]" }
 NumberOf { "[number of " allBodyParts "s of " validTargets "]" }
 DailyCumOf { "[daily cum amount of " validTargets "]" }
 DailyMilkOf { "[daily milk amount of " validTargets "]" }
 AdjectiveSizeOf { adjectiveSizeOfStart " size of "  validTargets "]" }
-DescriptionPartOf { "[desc " mutableBodyParts " of " scriptOrText "]" }
-TransformDescriptionPartOf { "[transform " mutableBodyParts " of " scriptOrText "]" }
+DescriptionPartOf { "[desc " mutableBodyParts kw<'of'> scriptOrWord "]" }
+TransformDescriptionPartOf { "[transform " mutableBodyParts kw<'of'> scriptOrWord "]" }
 HpOf { "[hp of " validTargets "]" }
-InfectionPartsOf {"[the infection " scriptOrText " of " validTargets "]" }
-StatusMagnitudeOf { "[status " scriptOrText " of " validTargets "]" }
-StatOf { "[stat " scriptOrText " of " validTargets "]" }
-LocalStatOf { "[lstat " scriptOrText " of " validTargets "]" }
-AccountStatOf { "[account stat " scriptOrText "]" }
+InfectionPartsOf {"[the infection " scriptOrWord kw<'of'> validTargets "]" }
+StatusMagnitudeOf { "[status " scriptOrWord kw<'of'> validTargets "]" }
+StatOf { "[stat " scriptOrWord kw<'of'> validTargets "]" }
+LocalStatOf { "[lstat " scriptOrWord kw<'of'> validTargets "]" }
+AccountStatOf { "[account stat " scriptOrWord "]" }
 FeralModeOf { "[feral mode of " validTargets "]" }
-CityStat { "[city stat " scriptOrText "]" }
+CityStat { "[city stat " scriptOrWord "]" }
 WeatherValue { "[weather " ( "id" | "dt" | "name" | "coord-lat" | "coord-lon" | "sys-country" | "sys-sunrise" | "sys-sunset" | "main-temp" | "main-temp_min" | "main-temp_max" | "main-pressure" | "main-sea_level" | "main-grnd_level" | "wind-speed" | "wind-deg" | "wind-gust" | "clouds-all" | "weather-id" | "weather-main" | "weather-description" | "weather-icon" | "rain-1h" | "rain-3h" | "snow-1h" | "snow-3h" ) "]"  }
 MoonPhase { "[moon phase" " capitalized"? "]" }
 
 // Utilities
-LowerCase { "[lowercase " scriptOrText "]" }
-UpperCase { "[uppercase " scriptOrText "]" }
-RandomNumber { "[random " scriptOrText " to " scriptOrText "]" }
+LowerCase { "[lowercase " scriptOrWord "]" }
+UpperCase { "[uppercase " scriptOrWord "]" }
+RandomNumber { "[random " scriptOrWord kw<'to'> scriptOrWord "]" }
 PresentYear { "[year]" }
 PresentMonth { "[month]" }
 PresentDay { "[day]" }
@@ -111,39 +106,47 @@ PresentWeekday { "[weekday]" }
 PresentHour { "[hour]" }
 PresentMinute { "[minute]" }
 PresentTimestamp { "[systime]" }
-OneOf { "[one of]" (scriptOrText "[or]")+ scriptOrText
-       ( "[at random]" | "[with odds: " scriptOrNumber ( " " scriptOrNumber )+ "]")  }
+OneOf { "[one of]" (scriptOrWord "[or]")+ scriptOrWord
+       ( "[at random]" | "[with odds: " scriptOrWord "]")  }
 
 
 
 // Variables
-WriteVariable { "[var write " scriptOrText " to " scriptOrText "]" }
-ReadVariable { "[var read " scriptOrText "]" }
+WriteVariable { "[var write " scriptOrWord kw<'to'> scriptOrWord "]" }
+ReadVariable { "[var read " scriptOrWord "]" }
 
 // Commands
-SetStat { "[set the " scriptOrText " of " Target " to " scriptOrNumber "]" }
-SetStatus { "[set " scriptOrText " status of " Target " to " scriptOrNumber " mag for " Number " rounds]" }
-IncreaseStat { "[increase the " scriptOrText " of " Target " by " Number "]" }
-Kill { "[kill " scriptOrText "]" }
-Impregnate { "[impregnate " Target " with " Target "]" }
-FillPart { "[fill the " fillableBodyParts " of " Target " by " Number "]" }
-TalkScript { "[talk " scriptOrText " of " Target "]" }
+SetStat { "[set the" scriptOrWord kw<'of'> Target kw<'to'> scriptOrWord "]" }
+SetStatus { "[set" scriptOrWord " status of " Target kw<'to'> scriptOrWord " mag for " scriptOrWord " rounds]" }
+IncreaseStat { "[increase the " scriptOrWord kw<'of'> Target kw<'by'> scriptOrWord "]" }
+Kill { "[kill " scriptOrWord "]" }
+Impregnate { "[impregnate " Target kw<'with'> Target "]" }
+FillPart { "[fill the " fillableBodyParts kw<'of'> Target kw<'of'> scriptOrWord "]" }
+TalkScript { "[talk " scriptOrWord kw<'of'> Target "]" }
 
 // Parameters
-validTargets { ( Player | Looker | Victor | Loser ) | scriptOrText }
-Player[@isGroup=parameter] { "player" }
-Looker[@isGroup=parameter] { "looker" }
-Victor[@isGroup=parameter] { "victor" }
-Loser[@isGroup=parameter] { "loser" }
+validTargets { ( Player | Looker | Victor | Loser ) | scriptOrWord }
+Player[@isGroup=parameter] { kw<"player"> }
+Looker[@isGroup=parameter] { kw<"looker"> }
+Victor[@isGroup=parameter] { kw<"victor"> }
+Loser[@isGroup=parameter] { kw<"loser"> }
 
 Target[@isGroup=parameter] { validTargets }
-Number[@isGroup=parameter] { number }
+
+@skip { whitespace }
+
+//Because we're inside regular text, none of the keywords are specialized, so using extend instead.
+kw<term> { @extend[@name={term}]<word, term> }
 
 @tokens {
-  validCharWithoutOpenScript { $[\n\x20-\x5a\x5c-\x7e] }
-  validCharWithoutScript { $[\n\x20-\x5a\x5c\x5e-\x7e] }
-  matchUntilNextCloseScript { ![\]\n]+ } // For comment blocks
-  number { @digit+ }
+  whitespace { $[ \n] }
+  word { char+ }
+  keyword { char+ }
+  @precedence { word, keyword }
+  // [ and ] (x5b and x5d) are reserved
+  char { $[\x21-\x5a\x5c\x5e-\x7f] }
+
+  matchUntilNextCloseScript { ![\]\n ]+ } // For comment blocks
   
   //These ones get a token so they don't match with a single [
   lengthOfStart { "[" allBodyParts " length" }

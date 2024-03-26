@@ -5,7 +5,7 @@ scriptOrWord { (word | script)+ }
 script { ( controlWords | comments | commands | lookupFunctions | utilityFunctions | math | variables ) }
 
 controlWords[@isGroup=control] {
-  If | End
+  If | Case | End
 }
 
 comments[@isGroup=comment] { Comment | Description }
@@ -35,6 +35,16 @@ If {
 IfTest[@isGroup=comparison] { scriptOrWord }
 IfTrue { scriptOrWord }
 IfFalse { scriptOrWord }
+
+Case {
+  "[case " CaseStatement "]"
+  CaseWhen+
+  "[end case]"
+}
+CaseStatement[@isGroup=comparison] { scriptOrWord }
+CaseWhen[@isGroup=control] { "[when " CaseWhenTest "]" CaseWhenTrue "[end when]" }
+CaseWhenTest[@isGroup=comparison] { scriptOrWord }
+CaseWhenTrue { scriptOrWord }
 
 // End block, for multiline?
 End { "[end]" }

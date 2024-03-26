@@ -4,7 +4,7 @@ scriptOrWord { (word | script)+ }
 
 script { ( controlWords | comments | commands | lookupFunctions | utilityFunctions | math | variables ) }
 
-controlWords[@isGroup=lookup] {
+controlWords[@isGroup=control] {
   If | End
 }
 

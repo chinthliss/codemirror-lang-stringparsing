@@ -1,8 +1,9 @@
 import { styleTags, tags as t } from "@lezer/highlight";
 
 export const stringParsingHighlighting = styleTags({
-    "lookup": t.controlKeyword,
-    "command": t.processingInstruction,
+    "command/...": t.processingInstruction,
+    "lookup/...": t.controlKeyword,
+    "control": t.controlKeyword,
     "math": t.arithmeticOperator,
     "comment": t.comment,
     "parameter": t.number,

@@ -131,7 +131,7 @@ SetStatus { "[set" scriptOrWord " status of " Target kw<'to'> scriptOrWord " mag
 IncreaseStat { "[increase the " scriptOrWord kw<'of'> Target kw<'by'> scriptOrWord "]" }
 Kill { "[kill " scriptOrWord "]" }
 Impregnate { "[impregnate " Target kw<'with'> Target "]" }
-FillPart { "[fill the " fillableBodyParts kw<'of'> Target kw<'of'> scriptOrWord "]" }
+FillPart { "[fill the " fillableBodyParts kw<'of'> Target kw<'by'> scriptOrWord "]" }
 TalkScript { "[talk " scriptOrWord kw<'of'> Target "]" }
 
 // Parameters
@@ -151,8 +151,7 @@ kw<term> { @extend[@name={term}]<word, term> }
 @tokens {
   whitespace { $[ \n] }
   word { char+ }
-  keyword { char+ }
-  @precedence { word, keyword }
+
   // [ and ] (x5b and x5d) are reserved
   char { $[\x21-\x5a\x5c\x5e-\x7f] }
 

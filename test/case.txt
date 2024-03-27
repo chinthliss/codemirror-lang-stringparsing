@@ -1,0 +1,19 @@
+# Simple
+
+[case test = test][when something]Something[end when][end case]
+
+==>
+
+Document(
+    Case(CaseStatement, CaseWhen(CaseWhenTest, CaseWhenTrue))
+)
+
+# Multiple Whens
+
+[case test = test][when something]Something[end when][when something else]Something else[end when][end case]
+
+==>
+
+Document(
+    Case(CaseStatement, CaseWhen(CaseWhenTest, CaseWhenTrue), CaseWhen(CaseWhenTest, CaseWhenTrue))
+)

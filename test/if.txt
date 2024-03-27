@@ -28,12 +28,24 @@ Document(
     If(IfTest, IfTrue, IfTest, IfTrue, IfFalse)
 )
 
-# Longer nested test
+# Multiple words on everything
 
-[if longer test of something]True[end if]
+[if longer test of something]Longer true response[else]Longer false response[end if]
 
 ==>
 
 Document(
-    If(IfTest, IfTrue)
+    If(IfTest, IfTrue, IfFalse)
+)
+
+# Nested test
+
+[if [if test]True[else]False[end if]][if test]True[else]False[end if][else][if test]True[else]False[end if][end if]
+
+==>
+
+Document(
+    If(IfTest(If(IfTest, IfTrue, IfFalse)),
+    IfTrue(If(IfTest, IfTrue, IfFalse)),
+    IfFalse(If(IfTest, IfTrue, IfFalse)))
 )

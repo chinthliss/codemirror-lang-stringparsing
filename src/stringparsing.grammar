@@ -87,11 +87,11 @@ SkinOf { "[skin of " validTargets "]" }
 CockOf { "[cock of " validTargets "]" }
 CuntOf { "[cunt of " validTargets "]" }
 LengthOf { lengthOfStart kw<'of'> validTargets "]" }
-FormattedLengthOf { "[formatted " allBodyParts " length of " validTargets "]" }
-NumberOf { "[number of " allBodyParts "s of " validTargets "]" }
+FormattedLengthOf { "[formatted " allBodyParts kw<'length'> kw<'of'> validTargets "]" }
+NumberOf { "[number of " allBodyParts "s" kw<'of'> validTargets "]" }
 DailyCumOf { "[daily cum amount of " validTargets "]" }
 DailyMilkOf { "[daily milk amount of " validTargets "]" }
-AdjectiveSizeOf { adjectiveSizeOfStart " size of "  validTargets "]" }
+AdjectiveSizeOf { adjectiveSizeOfStart kw<'size'> kw<'of'>  validTargets "]" }
 DescriptionPartOf { "[desc " mutableBodyParts kw<'of'> scriptOrWord "]" }
 TransformDescriptionPartOf { "[transform " mutableBodyParts kw<'of'> scriptOrWord "]" }
 HpOf { "[hp of " validTargets "]" }
@@ -127,7 +127,7 @@ ReadVariable { "[var read " scriptOrWord "]" }
 
 // Commands
 SetStat { "[set the" scriptOrWord kw<'of'> Target kw<'to'> scriptOrWord "]" }
-SetStatus { "[set" scriptOrWord " status of " Target kw<'to'> scriptOrWord " mag for " scriptOrWord " rounds]" }
+SetStatus { "[set" scriptOrWord kw<'status'> kw<'of'> Target kw<'to'> scriptOrWord kw<'mag'> kw<'for'> scriptOrWord " rounds]" }
 IncreaseStat { "[increase the " scriptOrWord kw<'of'> Target kw<'by'> scriptOrWord "]" }
 Kill { "[kill " scriptOrWord "]" }
 Impregnate { "[impregnate " Target kw<'with'> Target "]" }

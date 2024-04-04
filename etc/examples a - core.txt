@@ -1,8 +1,6 @@
-Combined series of tests taken from all the +help files and annotated with some extra ones to help
-one
-[
-one
-]
+Combined series of tests taken from all the +help files and annotated with some extra ones to help.
+
+It's also been butchered to ensure everything parses on testing except for the last section.
 
 [player]  -- Used to identify the person being looked at
 [looker]  -- Used to identify who is looking at a description
@@ -22,7 +20,7 @@ one
 [cock of [player]]
 [cunt of [player]]
 
-[%(letter) of [target]]
+%(letter) of target
 [%A of [player]]
 [%a of player]
    Pronoun subs. See help string parsing/Pronoun Replacements for details on subs available
@@ -116,9 +114,9 @@ Silly (but should still parse)
 
 [hp of [player]]
    Shows the current hp of the target as a percentage (for 100% it shows 100, 50% it shows 50, etcetera)
-   ALWAYS use [if [hp of [player]] when determining the hp of a [victor] or [loser] in Victory, oVictory, and Defeat messages
+   ALWAYS use (if (hp of [player])) when determining the hp of a [victor] or [loser] in Victory, oVictory, and Defeat messages
 
-[the infection test of [player]
+[the infection test of [player]]
    Returns a number from 0 to 7 denoting how many infection slots matched the infection/regex
 
 [status (status name) of [player]]
@@ -148,7 +146,8 @@ Timekeeping:
 [minute]
 
 Weather:
-[weather (data required)]
+weather (data required)
+[weather main-temp]
 Data required is a - seperated list of the elements from https://openweathermap.org/weather-data
 All values are in imperial
 So to get the temp, you would use [weather main-temp] or for wind-speed [weather wind-speed]
@@ -161,7 +160,7 @@ Moon Phases:
 Comments:
 [comment=(text)]
 [description=(text)]
-Both of these, when run through stringparsing, are simply removed. They must not have [ or ] in their text anywhere.
+Both of these, when run through stringparsing, are simply removed. They must not have brackets in their text.
 comment is used primarily to comment on your code
 description is used when power statuses are complicated by string parsing and need a neat description to be displayed instead
 
@@ -173,7 +172,7 @@ description is used when power statuses are complicated by string parsing and ne
 
 [lstat (stat name) of [player]]
    Show a lstat instead of a system-stat
-   These are used to return player-set stats and check them in [if ] statements
+   These are used to return player-set stats and check them in if  statements
 
 [end]
    Used in Victory, oVictory, and Defeat to end the processing in that block if [end] remains after displaying that block
@@ -216,13 +215,18 @@ COMMANDS
 [set (status name) status of [player] to (magnitude) mag for (duration) rounds]
    Will set a status on the target with the values specified
 
-[impregnate [victor] with [loser]]]
+[impregnate [victor] with [loser]]
    Will attempt to impregnate the first target with the second as the father
 
-[fill the (part) of [player] by (number)]
 [fill the mouth of [player] by 1]
    Will increase the chosen part's filled-stat of the chosen target by the supplied number. Currently: Ass, Balls, Bladder, Breasts, Foot, Hand, Mouth, and Nipple are valid parts
 
 [talk (propdir) of [player]]
 [talk something of [player]]
    Starts a talkscript in rpsystem running, in talkscript/(propdir)/talk with [player] as the target
+
+Deliberate failures:
+[invalid]
+[
+
+]

@@ -1,8 +1,38 @@
 import { styleTags, tags as t } from "@lezer/highlight";
 
 export const stringParsingHighlighting = styleTags({
-    "command/...": t.processingInstruction,
-    "lookup/...": t.keyword,
+    // Commands and their prepositions
+    "command": t.processingInstruction,
+    "SetStat/of": t.processingInstruction,
+    "SetStat/to": t.processingInstruction,
+    "SetStatus/status": t.processingInstruction,
+    "SetStatus/of": t.processingInstruction,
+    "SetStatus/to": t.processingInstruction,
+    "SetStatus/mag": t.processingInstruction,
+    "SetStatus/for": t.processingInstruction,
+    "IncreaseStat/of": t.processingInstruction,
+    "IncreaseStat/by": t.processingInstruction,
+    "Impregnate/with": t.processingInstruction,
+    "FillPart/of": t.processingInstruction,
+    "FillPart/by": t.processingInstruction,
+    "TalkScript/of": t.processingInstruction,
+
+    // Lookups and their prepositions
+    "lookup": t.keyword,
+    "PronounOf/of": t.keyword,
+    "LengthOf/of": t.keyword,
+    "FormattedLengthOf/length": t.keyword,
+    "FormattedLengthOf/of": t.keyword,
+    "AdjectiveSizeOf/size": t.keyword,
+    "AdjectiveSizeOf/of": t.keyword,
+    "NumberOf/of": t.keyword,
+    "DescriptionPartOf/of": t.keyword,
+    "TransformDescriptionPartOf/of": t.keyword,
+    "InfectionPartsOf/of": t.keyword,
+    "StatusMagnitudeOf/of": t.keyword,
+    "StatOf/of": t.keyword,
+    "LocalStatOf/of": t.keyword,
+
     "control": t.controlKeyword,
     "math": t.arithmeticOperator,
     "comment": t.comment,

@@ -4,29 +4,12 @@ scriptOrWord { (word | script)+ }
 
 script { ( controlWords | comments | commands | lookupFunctions | utilityFunctions | math | variables ) }
 
+//__________ Control / Logic
+
 controlWords[@isGroup=control] {
-  If | Case | End
+  If | Case | End | OneOf
 }
 
-comments[@isGroup=comment] { Comment | Description }
-
-commands[@isGroup=command] { IncreaseStat | Kill | SetStat | SetStatus | Impregnate | FillPart | TalkScript }
-
-lookupFunctions[@isGroup=lookup] {
-  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PresentArea | EnvironmentHeat | EnvironmentCold | EnvironmentWater | EnvironmentNanite | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | StatOf | LocalStatOf | AccountStatOf | FeralModeOf | CityStat | WeatherValue | MoonPhase
-}
-
-utilityFunctions[@isGroup=lookup] {
-  LowerCase | UpperCase | PresentYear | PresentMonth | PresentDay | PresentWeekday | PresentHour | PresentMinute | PresentTimestamp | RandomNumber | OneOf
-}
-
-variables[@isGroup=variable] {
-  ReadVariable | WriteVariable
-}
-
-math[@isGroup=math] { Addition | Subtraction | Multiplication | Division | Modulo | Power | Min | Max }
-
-// Control / Logic
 If {
   "[if" IfTest "]" IfTrue
   ("[else if" IfTest "]" IfTrue)*
@@ -46,10 +29,17 @@ CaseWhen[@isGroup=control] { "[when " CaseWhenTest "]" CaseWhenTrue "[end when]"
 CaseWhenTest[@isGroup=comparison] { scriptOrWord }
 CaseWhenTrue { scriptOrWord }
 
+OneOf { "[one of]" (scriptOrWord "[or]")+ scriptOrWord
+       ( "[at random]" | "[with odds: " scriptOrWord "]")  }
+
+
 // End block, for multiline?
 End { "[end]" }
 
-// Math
+//__________ Math
+
+math[@isGroup=math] { Addition | Subtraction | Multiplication | Division | Modulo | Power | Min | Max }
+
 Addition       { "[+ " scriptOrWord " +]" }
 Subtraction    { "[- " scriptOrWord " -]" }
 Multiplication { "[* " scriptOrWord " *]" }
@@ -59,9 +49,18 @@ Power          { "[^ " scriptOrWord " ^]" }
 Min            { "[< " scriptOrWord " <]" }
 Max            { "[> " scriptOrWord " >]" }
 
-// Comments
+//__________ Comments
+
+comments[@isGroup=comment] { Comment | Description }
+
 Comment { "[comment=" matchUntilNextCloseScript "]" }
 Description { "[description="  matchUntilNextCloseScript "]" }
+
+//__________ Lookup functions
+
+lookupFunctions[@isGroup=lookup] {
+  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PresentArea | EnvironmentHeat | EnvironmentCold | EnvironmentWater | EnvironmentNanite | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | StatOf | LocalStatOf | AccountStatOf | FeralModeOf | CityStat | WeatherValue | MoonPhase
+}
 
 // Simple lookups with no parameters
 PlayerName { "[player]" }
@@ -103,9 +102,14 @@ AccountStatOf { "[account stat " scriptOrWord "]" }
 FeralModeOf { "[feral mode of " validTargets "]" }
 CityStat { "[city stat " scriptOrWord "]" }
 WeatherValue { "[weather " ( "id" | "dt" | "name" | "coord-lat" | "coord-lon" | "sys-country" | "sys-sunrise" | "sys-sunset" | "main-temp" | "main-temp_min" | "main-temp_max" | "main-pressure" | "main-sea_level" | "main-grnd_level" | "wind-speed" | "wind-deg" | "wind-gust" | "clouds-all" | "weather-id" | "weather-main" | "weather-description" | "weather-icon" | "rain-1h" | "rain-3h" | "snow-1h" | "snow-3h" ) "]"  }
-MoonPhase { "[moon phase" " capitalized"? "]" }
+MoonPhase { "[moon phase" kw<'capitalized'>? "]" }
 
-// Utilities
+//__________ Utilities
+
+utilityFunctions[@isGroup=lookup] {
+  LowerCase | UpperCase | PresentYear | PresentMonth | PresentDay | PresentWeekday | PresentHour | PresentMinute | PresentTimestamp | RandomNumber
+}
+
 LowerCase { "[lowercase " scriptOrWord "]" }
 UpperCase { "[uppercase " scriptOrWord "]" }
 RandomNumber { "[random " scriptOrWord kw<'to'> scriptOrWord "]" }
@@ -116,16 +120,22 @@ PresentWeekday { "[weekday]" }
 PresentHour { "[hour]" }
 PresentMinute { "[minute]" }
 PresentTimestamp { "[systime]" }
-OneOf { "[one of]" (scriptOrWord "[or]")+ scriptOrWord
-       ( "[at random]" | "[with odds: " scriptOrWord "]")  }
 
+//__________ Variables
 
+variables[@isGroup=variable] {
+  ReadVariable | WriteVariable
+}
 
-// Variables
 WriteVariable { "[var write " scriptOrWord kw<'to'> scriptOrWord "]" }
 ReadVariable { "[var read " scriptOrWord "]" }
 
-// Commands
+//__________ Commands
+
+commands[@isGroup=command] {
+  IncreaseStat | Kill | SetStat | SetStatus | Impregnate | FillPart | TalkScript
+}
+
 SetStat { "[set the" scriptOrWord kw<'of'> Target kw<'to'> scriptOrWord "]" }
 SetStatus { "[set" scriptOrWord kw<'status'> kw<'of'> Target kw<'to'> scriptOrWord kw<'mag'> kw<'for'> scriptOrWord " rounds]" }
 IncreaseStat { "[increase the " scriptOrWord kw<'of'> Target kw<'by'> scriptOrWord "]" }
@@ -134,7 +144,7 @@ Impregnate { "[impregnate " Target kw<'with'> Target "]" }
 FillPart { "[fill the " fillableBodyParts kw<'of'> Target kw<'by'> scriptOrWord "]" }
 TalkScript { "[talk " scriptOrWord kw<'of'> Target "]" }
 
-// Parameters
+//__________ Parameters
 validTargets { ( Player | Looker | Victor | Loser ) | scriptOrWord }
 Player[@isGroup=parameter] { kw<"player"> }
 Looker[@isGroup=parameter] { kw<"looker"> }

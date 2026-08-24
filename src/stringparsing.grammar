@@ -59,7 +59,7 @@ Description { "[description="  matchUntilNextCloseScript "]" }
 //__________ Lookup functions
 
 lookupFunctions[@isGroup=lookup] {
-  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PresentArea | EnvironmentHeat | EnvironmentCold | EnvironmentWater | EnvironmentNanite | PronounOf | SizeOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | StatOf | LocalStatOf | AccountStatOf | FeralModeOf | CityStat | WeatherValue | MoonPhase
+  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PresentArea | EnvironmentHeat | EnvironmentCold | EnvironmentWater | EnvironmentNanite | PronounOf | SizeOf | SpeciesOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | StatOf | LocalStatOf | AccountStatOf | FeralModeOf | CityStat | WeatherValue | MoonPhase
 }
 
 // Simple lookups with no parameters
@@ -82,6 +82,7 @@ EnvironmentNanite { "[nanite]" }
 // Lookups with parameters
 PronounOf { pronounOfStart kw<'of'> validTargets "]" }
 SizeOf { "[size of " validTargets "]" }
+SpeciesOf { "[species of " validTargets "]" }
 SkinOf { "[skin of " validTargets "]" }
 CockOf { "[cock of " validTargets "]" }
 CuntOf { "[cunt of " validTargets "]" }

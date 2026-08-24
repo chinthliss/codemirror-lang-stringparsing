@@ -29,6 +29,9 @@ It's also been butchered to ensure everything parses on testing except for the l
    Returns the height of target
    This value matches the numerical value at the top of size
 
+[species of [player]]
+  Returns the most prevalent species of player, including a percentage
+
 Math
 [+ 1 2 3 +]     ( X + Y ) + Z
 [- 1 2 3 -]     ( X - Y ) - Z

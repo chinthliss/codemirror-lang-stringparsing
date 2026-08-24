@@ -161,8 +161,11 @@ Moon Phases:
 [moon phase capitalized] will return the phase of the moon with capitalized first letters.
 
 Comments:
-[comment=(text)]
-[description=(text)]
+[comment=]
+[comment=OneWord]
+[comment=Lots of words like a comment.]
+[description=]
+[description=Another set of words, but more like a description]
 Both of these, when run through stringparsing, are simply removed. They must not have brackets in their text.
 comment is used primarily to comment on your code
 description is used when power statuses are complicated by string parsing and need a neat description to be displayed instead

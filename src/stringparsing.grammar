@@ -53,8 +53,8 @@ Max            { "[> " scriptOrWord " >]" }
 
 comments[@isGroup=comment] { Comment | Description }
 
-Comment { "[comment=" matchUntilNextCloseScript "]" }
-Description { "[description="  matchUntilNextCloseScript "]" }
+Comment { "[comment=" matchUntilNextCloseScript* "]" }
+Description { "[description="  matchUntilNextCloseScript* "]" }
 
 //__________ Lookup functions
 
@@ -166,7 +166,7 @@ kw<term> { @extend[@name={term}]<word, term> }
   // [ and ] (x5b and x5d) are reserved
   char { $[\x21-\x5a\x5c\x5e-\x7f] }
 
-  matchUntilNextCloseScript { ![\]\n ]+ } // For comment blocks
+  matchUntilNextCloseScript { ![\] \n] } // For comment blocks
   
   //These ones get a token so they don't match with a single [
   lengthOfStart { "[" allBodyParts " length" }

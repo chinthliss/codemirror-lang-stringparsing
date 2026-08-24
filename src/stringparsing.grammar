@@ -59,7 +59,7 @@ Description { "[description="  matchUntilNextCloseScript* "]" }
 //__________ Lookup functions
 
 lookupFunctions[@isGroup=lookup] {
-  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PresentArea | EnvironmentHeat | EnvironmentCold | EnvironmentWater | EnvironmentNanite | PronounOf | SizeOf | SpeciesOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | HpOf | InfectionPartsOf | StatusMagnitudeOf | StatOf | LocalStatOf | AccountStatOf | FeralModeOf | CityStat | WeatherValue | MoonPhase
+  PlayerName | LookerName | VictorName | LoserName | OwnerName | HereName | CommandName | SkinShortDescription | CockShortDescription | CuntShortDescription | PresentArea | EnvironmentHeat | EnvironmentCold | EnvironmentWater | EnvironmentNanite | PronounOf | SizeOf | SpeciesOf | SkinOf | CockOf | CuntOf | LengthOf | FormattedLengthOf | NumberOf | DailyCumOf | DailyMilkOf | AdjectiveSizeOf | DescriptionPartOf | TransformDescriptionPartOf | VictoryMessage | OVictoryMessage | DefeatMessage | HpOf | InfectionPartsOf | StatusMagnitudeOf | StatOf | LocalStatOf | AccountStatOf | FeralModeOf | CityStat | WeatherValue | MoonPhase
 }
 
 // Simple lookups with no parameters
@@ -94,6 +94,9 @@ DailyMilkOf { "[daily milk amount of " validTargets "]" }
 AdjectiveSizeOf { adjectiveSizeOfStart kw<'size'> kw<'of'>  validTargets "]" }
 DescriptionPartOf { "[desc " mutableBodyParts kw<'of'> scriptOrWord "]" }
 TransformDescriptionPartOf { "[transform " mutableBodyParts kw<'of'> scriptOrWord "]" }
+VictoryMessage { "[victory " scriptOrWord kw<'on'> scriptOrWord " num " scriptOrWord kw<'of'> scriptOrWord "]" }
+OVictoryMessage { "[ovictory " scriptOrWord kw<'on'> scriptOrWord " num " scriptOrWord kw<'of'> scriptOrWord "]" }
+DefeatMessage { "[defeat " scriptOrWord kw<'on'> scriptOrWord " num " scriptOrWord kw<'of'> scriptOrWord "]" }
 HpOf { "[hp of " validTargets "]" }
 InfectionPartsOf {"[the infection " scriptOrWord kw<'of'> validTargets "]" }
 StatusMagnitudeOf { "[status " scriptOrWord kw<'of'> validTargets "]" }

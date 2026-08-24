@@ -29,10 +29,17 @@ export const stringParsingHighlighting = styleTags({
     "DescriptionPartOf/of": t.keyword,
     "TransformDescriptionPartOf/of": t.keyword,
     "InfectionPartsOf/of": t.keyword,
+    "VictoryMessage/of": t.keyword,
+    "VictoryMessage/on": t.keyword,
+    "OVictoryMessage/of": t.keyword,
+    "OVictoryMessage/on": t.keyword,
+    "DefeatMessage/of": t.keyword,
+    "DefeatMessage/on": t.keyword,
     "StatusMagnitudeOf/of": t.keyword,
     "StatOf/of": t.keyword,
     "LocalStatOf/of": t.keyword,
 
+    // Other
     "control": t.controlKeyword,
     "math": t.arithmeticOperator,
     "comment": t.comment,

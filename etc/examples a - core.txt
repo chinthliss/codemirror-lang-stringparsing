@@ -115,6 +115,12 @@ Silly (but should still parse)
    Results in the transform of (part) on (form)
    Cannot be used in player-descs
 
+[victory [victor] on [loser] num # of FORM]
+[victory [victor] on [loser] num (#) of [stat groin of [victor]]]
+[ovictory [victor] on [loser] num # of FORM]
+[defeat [victor] on [loser] num # of FORM]
+  Gives the listed line of the listed form's victory, ovictory, or defeat message.
+
 [hp of [player]]
    Shows the current hp of the target as a percentage (for 100% it shows 100, 50% it shows 50, etcetera)
    ALWAYS use (if (hp of [player])) when determining the hp of a [victor] or [loser] in Victory, oVictory, and Defeat messages

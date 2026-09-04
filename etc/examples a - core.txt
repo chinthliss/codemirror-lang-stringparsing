@@ -186,6 +186,8 @@ description is used when power statuses are complicated by string parsing and ne
    Show a lstat instead of a system-stat
    These are used to return player-set stats and check them in if  statements
 
+[line break]
+  Adds a line break
 [end]
    Used in Victory, oVictory, and Defeat to end the processing in that block if [end] remains after displaying that block
    ONLY use for multi-line messages! These are not necessary unless you require a line break

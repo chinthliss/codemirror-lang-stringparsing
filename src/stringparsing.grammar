@@ -7,7 +7,7 @@ script { ( controlWords | comments | commands | lookupFunctions | utilityFunctio
 //__________ Control / Logic
 
 controlWords[@isGroup=control] {
-  If | Case | End | OneOf
+  If | Case | End | OneOf | LineBreak
 }
 
 If {
@@ -33,9 +33,9 @@ OneOf { "[one of]" (scriptOrWord "[or]")+ scriptOrWord
        ( "[at random]" | "[with odds: " scriptOrWord "]")  }
 
 
-// End block, for multiline?
+// End block and line break, part of multiline handling
 End { "[end]" }
-
+LineBreak { "[line break]" }
 //__________ Math
 
 math[@isGroup=math] { Addition | Subtraction | Multiplication | Division | Modulo | Power | Min | Max }
